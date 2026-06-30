@@ -68,8 +68,8 @@ function setupReveal() {
 }
 
 /* ========================================================================
-   UTILITÁRIO: SCRUB DE VÍDEO SUAVE
-   Interpola o currentTime com velocidade adaptativa e fila de seeks.
+   UTILITÁRIO: SCRUB DE VÍDEO COM MOMENTUM (EASE OUT)
+   Ao parar o scroll, o vídeo continua um pouco e desacelera organicamente.
    ======================================================================== */
 const VIDEO_FPS = 30;
 const FRAME_TIME = 1 / VIDEO_FPS;
@@ -82,106 +82,136 @@ window.addEventListener('scroll', () => {
   clearTimeout(scrollIdleTimer);
   scrollIdleTimer = setTimeout(() => {
     isPageScrolling = false;
-  }, 120);
+  }, 140);
 }, { passive: true });
 
-function getAdaptiveLerpSpeed(distance) {
-  if (isPageScrolling) {
-    return distance > 0.15 ? 0.65 : 0.45;
-  }
-  return distance > 0.05 ? 0.35 : 0.2;
+function snapToFrame(time, duration) {
+  const clamped = Math.max(0, Math.min(duration, time));
+  return Math.round(clamped / FRAME_TIME) * FRAME_TIME;
 }
 
-function seekVideoToFrame(video, time, pendingSeekRef) {
-  const safeTime = Math.max(0, Math.min(video.duration, time));
+function getRawProgress(scrollTrigger) {
+  const range = scrollTrigger.end - scrollTrigger.start;
+  if (range <= 0) return 0;
+  return gsap.utils.clamp(0, 1, (scrollTrigger.scroll() - scrollTrigger.start) / range);
+}
 
-  if (video.seeking) {
-    pendingSeekRef.value = safeTime;
-    return;
-  }
+function applyVideoTime(video, time, force = false) {
+  if (!video?.duration || isNaN(video.duration)) return;
+
+  const frameTime = snapToFrame(time, video.duration);
+  if (!force && Math.abs(video.currentTime - frameTime) < FRAME_TIME * 0.4) return;
 
   if (typeof video.fastSeek === 'function') {
-    video.fastSeek(safeTime);
+    video.fastSeek(frameTime);
   } else {
-    video.currentTime = safeTime;
+    video.currentTime = frameTime;
   }
 }
 
-function createVideoScrubber(video) {
+function createMomentumVideoScrubber(video, options = {}) {
+  const {
+    invert = false,
+    scrollLerp = 0.42,
+    friction = 0.9,
+    momentumScale = 0.38,
+    maxVelocity = 2.8
+  } = options;
+
   const state = {
     targetTime: 0,
-    currentTime: 0,
-    pendingSeek: { value: null },
+    displayTime: 0,
+    lastTargetTime: 0,
+    velocity: 0,
     ready: false
   };
 
-  video.addEventListener('seeked', () => {
-    if (state.pendingSeek.value === null) return;
-    const nextTime = state.pendingSeek.value;
-    state.pendingSeek.value = null;
-    seekVideoToFrame(video, nextTime, state.pendingSeek);
-  });
+  function progressToTime(progress) {
+    if (!video.duration) return 0;
+    const normalized = invert ? 1 - progress : progress;
+    return normalized * video.duration;
+  }
 
   return {
-    setTarget(time) {
-      state.targetTime = time;
+    setProgress(progress) {
+      state.targetTime = progressToTime(progress);
     },
     snapTo(time) {
       state.targetTime = time;
-      state.currentTime = time;
-      seekVideoToFrame(video, time, state.pendingSeek);
-    },
-    tick() {
-      if (!state.ready || !video.duration || isNaN(video.duration)) return;
-
-      const distance = Math.abs(state.targetTime - state.currentTime);
-      const lerpSpeed = getAdaptiveLerpSpeed(distance);
-      state.currentTime += (state.targetTime - state.currentTime) * lerpSpeed;
-
-      const roundedTime = Math.round(state.currentTime / FRAME_TIME) * FRAME_TIME;
-
-      if (Math.abs(video.currentTime - roundedTime) >= FRAME_TIME * 0.4) {
-        seekVideoToFrame(video, roundedTime, state.pendingSeek);
-      }
+      state.displayTime = time;
+      state.lastTargetTime = time;
+      state.velocity = 0;
+      applyVideoTime(video, time, true);
     },
     markReady(initialTime = 0) {
       state.ready = true;
       state.targetTime = initialTime;
-      state.currentTime = initialTime;
+      state.displayTime = initialTime;
+      state.lastTargetTime = initialTime;
+    },
+    tick(deltaSeconds) {
+      if (!state.ready || !video.duration || isNaN(video.duration)) return;
+
+      const dt = Math.min(deltaSeconds, 0.05);
+
+      if (isPageScrolling) {
+        const targetDelta = state.targetTime - state.lastTargetTime;
+        if (dt > 0) {
+          const instantVelocity = targetDelta / dt;
+          state.velocity = gsap.utils.clamp(
+            -maxVelocity,
+            maxVelocity,
+            instantVelocity * momentumScale
+          );
+        }
+        state.lastTargetTime = state.targetTime;
+        state.displayTime += (state.targetTime - state.displayTime) * scrollLerp;
+      } else {
+        state.displayTime += state.velocity * dt;
+        state.velocity *= Math.pow(friction, dt * 60);
+
+        if (Math.abs(state.velocity) < 0.015) {
+          state.velocity = 0;
+          state.displayTime += (state.targetTime - state.displayTime) * 0.1;
+        }
+      }
+
+      state.displayTime = gsap.utils.clamp(0, video.duration, state.displayTime);
+      applyVideoTime(video, state.displayTime);
     }
   };
 }
-
-const heroVideo = document.querySelector('.hero__video');
-let heroScrubber = null;
 
 /* ========================================================================
    3. ANIMAÇÃO DE INTRODUÇÃO DO HERO
    Animação original que encolhe (scale) o conteúdo e revela o primeiro vídeo.
    ======================================================================== */
 
+const heroVideo = document.querySelector('.hero__video');
+let heroScrollTrigger = null;
+let buildScrollTrigger = null;
+let heroVideoScrubber = null;
+let buildVideoScrubber = null;
+
 function initHeroGSAPAnimation() {
   const heroSection = document.querySelector('.hero');
   if (!heroSection || !heroVideo) return;
 
-  heroScrubber = createVideoScrubber(heroVideo);
-  heroScrubber.markReady(0);
+  heroVideoScrubber = createMomentumVideoScrubber(heroVideo);
+  heroVideoScrubber.markReady(0);
 
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: ".hero",
       start: "top top",
       end: "+=2500",
-      scrub: 0.35,
+      scrub: 1,
       pin: true,
-      anticipatePin: 1,
-      onUpdate: (self) => {
-        if (heroVideo && !isNaN(heroVideo.duration) && heroVideo.duration > 0) {
-          heroScrubber.setTarget(self.progress * heroVideo.duration);
-        }
-      }
+      anticipatePin: 1
     }
   });
+
+  heroScrollTrigger = tl.scrollTrigger;
 
   tl.to(".hero__container, .hero__bottom-bar", {
     opacity: 0,
@@ -194,15 +224,6 @@ function initHeroGSAPAnimation() {
     opacity: 1,
     duration: 0.8
   }, "<");
-}
-
-function startVideoScrubLoop() {
-  function tick() {
-    heroScrubber?.tick();
-    buildScrubber?.tick();
-    requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
 }
 
 function setupHero() {
@@ -220,12 +241,12 @@ function setupHero() {
       heroVideo.src = blobURL;
       
       heroVideo.addEventListener('loadedmetadata', function init() {
+        heroVideo.play().then(() => heroVideo.pause()).catch(() => {});
         initHeroGSAPAnimation();
         heroVideo.removeEventListener('loadedmetadata', init);
       });
     })
     .catch(() => {
-      // Fallback local se o fetch for bloqueado (CORS/file://)
       heroVideo.load();
       heroVideo.play().then(() => heroVideo.pause()).catch(() => {});
       initHeroGSAPAnimation();
@@ -237,7 +258,6 @@ function setupHero() {
    [OBRIGATÓRIO] Sequência pinada de vídeo rodando invertida no scroll
    ======================================================================== */
 let buildVideoElement = null;
-let buildScrubber = null;
 
 function setupBuildSequence() {
   buildVideoElement = document.querySelector('.build-section__video');
@@ -265,7 +285,6 @@ function setupBuildSequence() {
           buildVideoElement.pause();
         }).catch(() => {});
 
-        // Inicializa a animação com a duração real carregada
         initBuildTimeline(buildVideoElement.duration);
         buildVideoElement.removeEventListener('loadedmetadata', init);
       });
@@ -273,7 +292,6 @@ function setupBuildSequence() {
     .catch(err => {
       console.warn("CORS/Erro ao carregar Build Video como Blob. Usando fallback progressivo.", err);
       
-      // Fallback seguro: tenta inicializar usando escuta padrão ou valor estimado
       buildVideoElement.load();
       buildVideoElement.addEventListener('loadedmetadata', function init() {
         buildVideoElement.play().then(() => {
@@ -297,32 +315,42 @@ function setupBuildSequence() {
 function initBuildTimeline(duration) {
   const videoDuration = duration || 5;
 
-  buildScrubber = createVideoScrubber(buildVideoElement);
-  buildScrubber.markReady(videoDuration);
-  buildScrubber.snapTo(videoDuration);
+  buildVideoScrubber = createMomentumVideoScrubber(buildVideoElement, { invert: true });
+  buildVideoScrubber.markReady(videoDuration);
+  buildVideoScrubber.snapTo(videoDuration);
 
-  // Configuração do ScrollTrigger com GSAP
-  gsap.timeline({
+  const tl = gsap.timeline({
     scrollTrigger: {
       trigger: ".build-section",
       start: "top top",
       end: "+=3000",
-      scrub: 0.35,
+      scrub: 1,
       pin: true,
       anticipatePin: 1,
-      onUpdate: (self) => {
-        if (buildVideoElement && !isNaN(buildVideoElement.duration) && buildVideoElement.duration > 0) {
-          buildScrubber.setTarget((1 - self.progress) * buildVideoElement.duration);
-        }
-      },
       onLeave: () => {
-        buildScrubber.snapTo(0);
+        buildVideoScrubber.snapTo(0);
       },
       onLeaveBack: () => {
-        if (buildVideoElement && !isNaN(buildVideoElement.duration)) {
-          buildScrubber.snapTo(buildVideoElement.duration);
-        }
+        buildVideoScrubber.snapTo(videoDuration);
       }
+    }
+  });
+
+  buildScrollTrigger = tl.scrollTrigger;
+}
+
+function startVideoScrubLoop() {
+  gsap.ticker.add((_, deltaTime) => {
+    const dt = deltaTime / 1000;
+
+    if (heroScrollTrigger?.isActive && heroVideoScrubber) {
+      heroVideoScrubber.setProgress(getRawProgress(heroScrollTrigger));
+      heroVideoScrubber.tick(dt);
+    }
+
+    if (buildScrollTrigger?.isActive && buildVideoScrubber) {
+      buildVideoScrubber.setProgress(getRawProgress(buildScrollTrigger));
+      buildVideoScrubber.tick(dt);
     }
   });
 }
@@ -332,10 +360,6 @@ function initBuildTimeline(duration) {
    Chamada de cada função de configuração modular.
    ======================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
-  if (typeof ScrollTrigger !== 'undefined') {
-    ScrollTrigger.config({ limitCallbacks: true });
-  }
-
   setupNavbar();
   setupReveal();
   setupHero();

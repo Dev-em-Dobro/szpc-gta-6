@@ -214,10 +214,12 @@ body {
   height: 100%;
   object-fit: cover;
   z-index: 1;
-  opacity: 0; /* Invisível inicialmente, revelado no scroll */
-  pointer-events: none; /* Garante que cliques cheguem nos botões */
+  opacity: 0;
+  pointer-events: none;
   transform: translateZ(0);
   backface-visibility: hidden;
+  contain: strict;
+  will-change: transform;
 }
 
 /* Camada escura de degradê sob a página (Scrim) */
@@ -547,6 +549,8 @@ body {
   z-index: 1;
   transform: translateZ(0);
   backface-visibility: hidden;
+  contain: strict;
+  will-change: transform;
 }
 
 .build-section__overlay {
