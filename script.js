@@ -269,6 +269,21 @@ function setupHero() {
   // 1) Cria o pin/animação IMEDIATAMENTE (não depende do vídeo).
   initHeroTimeline();
 
+  // No celular (iOS principalmente) o vídeo só decodifica/renderiza frames
+  // após um play() disparado DENTRO de um gesto do usuário. Sem isso, mexer no
+  // currentTime durante o scroll não mostra nada (o vídeo fica preto/em branco).
+  // Aqui destravamos o decoder no primeiro toque/clique do usuário.
+  function unlockHeroVideo() {
+    window.removeEventListener('touchstart', unlockHeroVideo);
+    window.removeEventListener('pointerdown', unlockHeroVideo);
+    const p = heroVideo.play();
+    if (p && typeof p.then === 'function') {
+      p.then(() => heroVideo.pause()).catch(() => {});
+    }
+  }
+  window.addEventListener('touchstart', unlockHeroVideo, { passive: true });
+  window.addEventListener('pointerdown', unlockHeroVideo, { passive: true });
+
   // 2) Baixa o vídeo em segundo plano e liga o scrubber quando carregar.
   const originalSrc = heroVideo.src;
 

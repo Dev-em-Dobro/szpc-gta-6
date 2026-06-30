@@ -4,52 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GTA VI - Vice City Inspired Landing Page</title>
-  
-  <!-- Fontes do Google Fonts: Oswald (títulos condensados), Cinzel (subtítulos Art Deco) e Questrial (corpo do texto) -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Oswald:wght@500;700&family=Questrial&display=swap" rel="stylesheet">
-  
-  <!-- Arquivo de estilo CSS principal -->
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Questrial&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- NAVBAR: Menu superior fixo e transparente -->
+  <!-- NAVBAR -->
   <nav class="navbar" id="navbar">
     <div class="navbar__container">
-      <!-- Logo "VI" estilo neon -->
       <a href="#" class="navbar__logo">VI</a>
     </div>
   </nav>
 
-  <!-- HERO SECTION: O destaque principal com o poster clássico e o logo sobreposto -->
+  <!-- HERO -->
   <header class="hero">
-    <!-- Vídeo que avança/retrocede com o scroll (GSAP ScrollTrigger) -->
-    <video class="hero__video" src="assets/magnific_video-curto-de-5-a-camera_aQetRV4fSh.mp4" muted playsinline preload="auto"></video>
+    <video class="hero__video" src="assets/magnific_video-curto-de-5-a-camera_aQetRV4fSh.mp4" muted playsinline webkit-playsinline preload="auto"></video>
 
     <div class="hero__container">
-      <!-- Container do poster central -->
       <div class="hero__poster-wrapper">
-        <!-- Imagem gerada do Box Art -->
         <img src="assets/gta_box_art.png" alt="GTA VI Box Art Artwork" class="hero__poster">
       </div>
     </div>
 
-    <!-- Barra inferior com Informações e Chamada para Ação (CTA) -->
     <div class="hero__bottom-bar">
       <div class="hero__bottom-container">
         <div class="hero__date-info">
           <p class="hero__eyebrow">Lançamento</p>
           <h3 class="hero__date">19 de Novembro de 2026</h3>
         </div>
-        
-        <!-- Botão CTA Principal (estilo Pill, com Times New Roman para contraste serifado) -->
+
         <a href="#preorder" class="btn btn--primary">Reserve Agora</a>
-        
+
         <div class="hero__platforms">
           <p class="hero__eyebrow">Disponível em</p>
-          <!-- Ícones das plataformas em SVG -->
           <div class="platform-icons">
             <span class="platform-text">PS5 · Xbox Series X|S</span>
           </div>
@@ -57,7 +48,7 @@
       </div>
     </div>
 
-    <!-- Scroll Hint: seta sutil posicionada no rodapé do hero, abaixo da barra inferior -->
+    <!-- Seta de scroll no rodapé do hero -->
     <div class="hero__scroll-hint">
       <svg class="arrow-down" viewBox="0 0 24 24" width="24" height="24">
         <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/>
@@ -66,7 +57,7 @@
   </header>
 
   <main>
-    <!-- SEÇÃO INTERMEDIÁRIA: Bloco de história (Vice City, EUA) -->
+    <!-- História -->
     <section class="story-section">
       <div class="container reveal">
         <p class="eyebrow">História</p>
@@ -79,11 +70,9 @@
       </div>
     </section>
 
-    <!-- SEÇÃO DE MÍDIA: título, texto e card de imagem com título/texto sobrepostos -->
+    <!-- Mídia: card de imagem com overlay -->
     <section class="media-section">
       <div class="container reveal">
-        
-        <!-- Card de imagem com overlay (eyebrow, título, subtítulo e botão) -->
         <article class="media-card">
           <img src="assets/gta1.png" alt="Cena do trailer de GTA VI" class="media-card__img">
           <div class="media-card__overlay">
@@ -100,16 +89,13 @@
         </article>
       </div>
     </section>
-
   </main>
 
-  <!-- FOOTER: rodapé simples e centralizado -->
+  <!-- FOOTER -->
   <footer class="footer">
     <div class="container footer__inner">
-      <!-- Logo -->
       <div class="footer__logo">GTA VI</div>
 
-      <!-- Links institucionais / jurídicos -->
       <nav class="footer__nav">
         <a href="#">Corporativo</a>
         <a href="#">Privacidade</a>
@@ -119,14 +105,12 @@
         <a href="#">Não vender nem compartilhar as minhas informações pessoais</a>
       </nav>
 
-      <!-- Redes sociais -->
       <div class="footer__socials">
         <a href="#" aria-label="YouTube" class="social-link">YT</a>
         <a href="#" aria-label="Instagram" class="social-link">IG</a>
         <a href="#" aria-label="X / Twitter" class="social-link">X</a>
       </div>
 
-      <!-- Classificação indicativa + copyright -->
       <p class="footer__rating">
         Pode incluir conteúdo inapropriado para crianças. Acesse
         <a href="https://www.gov.br" target="_blank" rel="noopener">gov.br</a> para ver informações da classificação indicativa.
@@ -135,11 +119,8 @@
     </div>
   </footer>
 
-  <!-- CDNs do GSAP e ScrollTrigger para a animação do vídeo no scroll -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-
-  <!-- Script de comportamento JS -->
   <script src="script.js"></script>
 </body>
 </html>

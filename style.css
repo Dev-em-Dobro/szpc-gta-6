@@ -1,55 +1,37 @@
-/* 
-========================================================================
-   STYLE SYSTEM — INSPIRADO EM GTA VI / VICE CITY
-   Feito de forma simples, didática e muito bem explicada para iniciantes!
-========================================================================
-*/
+/* ============================================================
+   GTA VI / VICE CITY — ESTILOS
+   ============================================================ */
 
-/* 1. CONFIGURAÇÃO DE VARIÁVEIS (DESIGN TOKENS)
-   Armazenamos cores e fontes aqui para reutilização em todo o projeto.
-   É uma prática recomendada para manter o código limpo e fácil de manter.
-*/
+/* Variáveis (design tokens) */
 :root {
-  /* Cores de Fundo (Base Noturna - Indigo Navy, não é preto puro!) */
-  --bg-night:        #0d0d1a;   /* Fundo principal da página */
-  --bg-dark:         #14142a;   /* Fundo de seções secundárias */
-  --bg-elevated:     #1c1c38;   /* Fundo para caixas de input e cards */
+  --bg-night: #0d0d1a;
+  --bg-dark:  #14142a;
 
-  /* Cores de Texto */
-  --text-primary:    #ffffff;   /* Texto principal de leitura */
-  --text-secondary:  #c4c0d8;   /* Descrições e parágrafos */
-  --text-muted:      #6e6e85;   /* Copyright e legendas secundárias */
+  --text-primary:   #ffffff;
+  --text-secondary: #c4c0d8;
+  --text-muted:     #6e6e85;
 
-  /* Acentos Neon (Vice City Vibes) */
-  --neon-pink:       #ff3d8b;   /* Rosa/coral para botões e foco */
-  --neon-magenta:    #e0218a;   /* Magenta vibrante */
-  --neon-coral:      #ff6a6a;   /* Título de seção "Vice City" */
-  --neon-orange:     #ff7a18;   /* Gradiente laranja sunset */
-  --neon-yellow:     #ffd23f;   /* Destaques dourados */
+  --neon-pink:  #ff3d8b;
+  --neon-coral: #ff6a6a;
 
-  /* Fontes (Importadas no HTML) */
-  --font-display-cond: "Oswald", sans-serif;       /* Títulos altos e compactos */
-  --font-display:      "Cinzel", serif;            /* Subtítulos com ar geométrico/Art Deco */
-  --font-ui:           "Questrial", sans-serif;    /* Textos normais e botões de apoio */
-  --font-serif-btn:    "Times New Roman", Times, serif; /* Botão principal (estilo retro-contraste) */
+  --font-display-cond: "Oswald", sans-serif;
+  --font-ui:           "Questrial", sans-serif;
+  --font-serif-btn:    "Times New Roman", Times, serif;
 
-  /* Grid & Espaçamento */
   --container-max: 1200px;
-  --gutter: clamp(1rem, 5vw, 4rem); /* Espaçamento lateral dinâmico baseado na tela */
+  --gutter: clamp(1rem, 5vw, 4rem);
 }
 
-/* 2. RESET BÁSICO CSS
-   Removemos margens e paddings padrão do navegador para iniciar com folha limpa.
-*/
+/* Reset */
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box; /* Garante que padding e border não aumentem a largura total */
+  box-sizing: border-box;
 }
 
 html {
-  scroll-behavior: smooth; /* Rolagem suave da página ao clicar em links internos */
-  font-size: 16px; /* Tamanho base para facilitar cálculo de rem */
+  scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 body {
@@ -57,46 +39,41 @@ body {
   color: var(--text-primary);
   font-family: var(--font-ui);
   line-height: 1.6;
-  overflow-x: hidden; /* Evita barra de rolagem horizontal acidental */
-  -webkit-font-smoothing: antialiased; /* Suavização extra de fontes em navegadores WebKit */
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* 3. COMPONENTES GERAIS */
-
-/* Container centralizado para alinhar os conteúdos */
+/* Componentes gerais */
 .container {
   max-width: var(--container-max);
-  margin: 0 auto; /* Centraliza a caixa na tela */
+  margin: 0 auto;
   padding: 0 var(--gutter);
 }
 
-/* Eyebrows (títulos bem pequenos que vêm antes dos títulos maiores) */
 .eyebrow {
   font-family: var(--font-display-cond);
   font-size: 0.85rem;
   font-weight: 700;
-  letter-spacing: 0.2em; /* Espaçamento entre as letras marcante */
-  text-transform: uppercase; /* Caixa Alta */
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
   color: var(--neon-pink);
   margin-bottom: 0.75rem;
   display: block;
 }
 
-/* BOTÕES (Pills / Arredondados com efeito Neon no hover) */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none; /* Remove sublinhado padrão */
+  text-decoration: none;
   font-size: 1rem;
   padding: 0.9rem 2.2rem;
-  border-radius: 50px; /* Deixa o botão no formato de pílula */
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Transição suave de estados */
+  border-radius: 50px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   cursor: pointer;
   border: 1px solid transparent;
 }
 
-/* Botão Rosa Neon Principal (com Times New Roman para contraste marcante) */
 .btn--primary {
   font-family: var(--font-serif-btn);
   background-color: var(--neon-pink);
@@ -105,59 +82,34 @@ body {
 }
 
 .btn--primary:hover {
-  filter: brightness(1.1); /* Aumenta a luminosidade */
-  box-shadow: 0 0 28px rgba(255, 61, 139, 0.65); /* Efeito brilhante/glow */
-  transform: translateY(-2px); /* Efeito sutil de flutuar */
+  filter: brightness(1.1);
+  box-shadow: 0 0 28px rgba(255, 61, 139, 0.65);
+  transform: translateY(-2px);
 }
 
 .btn--primary:active {
-  transform: translateY(0); /* Volta ao normal ao clicar */
+  transform: translateY(0);
 }
 
-/* Botão Secundário Transparente / Vidro */
-.btn--secondary {
-  font-family: var(--font-ui);
-  background-color: rgba(255, 255, 255, 0.08);
-  color: var(--text-primary);
-  border: 1px solid var(--border-subtle);
-  backdrop-filter: blur(5px); /* Borra o fundo (efeito vidro) */
-}
-
-.btn--secondary:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.4);
-  transform: translateY(-1px);
-}
-
-
-/* 4. NAVBAR (Menu de Navegação Superior) */
+/* Navbar */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 1000; /* Garante que fique acima de tudo na tela */
+  z-index: 1000;
   background: transparent;
-  transition: background-color 0.4s, backdrop-filter 0.4s;
-}
-
-/* Classe adicionada via JavaScript quando rolamos a página */
-.navbar--scrolled {
-  background-color: transparent;
-  backdrop-filter: none;
-  border-bottom: none;
 }
 
 .navbar__container {
   display: flex;
-  justify-content: space-between; /* Distribui logo e botão para as extremidades */
+  justify-content: space-between;
   align-items: center;
   max-width: var(--container-max);
   margin: 0 auto;
   padding: 0.5rem var(--gutter);
 }
 
-/* Monograma "VI" */
 .navbar__logo {
   font-family: var(--font-display-cond);
   font-size: 1.8rem;
@@ -172,48 +124,25 @@ body {
   opacity: 0.8;
 }
 
-/* Ícone Hambúrguer (Mobile) */
-.navbar__toggle {
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 24px;
-  height: 18px;
-}
-
-.navbar__toggle .bar {
-  display: block;
-  width: 100%;
-  height: 2px;
-  background-color: var(--text-primary);
-  border-radius: 4px;
-  transition: all 0.3s ease;
-}
-
-
-/* 5. HERO SECTION */
+/* Hero */
 .hero {
-  min-height: 100svh; /* Ocupa exatamente a tela cheia no mobile e desktop */
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Agrupa poster + barra inferior centralizados verticalmente */
+  justify-content: center;
   align-items: center;
   position: relative;
   overflow: hidden;
-  padding-top: 40px; /* Evita que a navbar cubra o conteúdo do topo */
+  padding-top: 40px;
 }
 
-/* Vídeo promocional de fundo (controlado por GSAP) */
 .hero__video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;          /* Preenche toda a área mantendo a proporção */
-  object-position: center top; /* Ancora no topo: o corte acontece embaixo, nunca em cima */
+  object-fit: cover;
+  object-position: center top;
   z-index: 1;
   opacity: 0;
   pointer-events: none;
@@ -229,58 +158,36 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 3; /* Conteúdo por cima de tudo */
+  z-index: 3;
   position: relative;
-  padding: 1rem 0 0.5rem; /* Pouco espaço abaixo: aproxima a barra da imagem */
+  padding: 1rem 0 0.5rem;
 }
 
-/* Wrapper do poster para manter as proporções */
 .hero__poster-wrapper {
   position: relative;
   max-width: 650px;
   width: 90%;
   border-radius: 12px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
-  overflow: visible; /* Permite que efeitos saiam sutilmente */
+  overflow: visible;
 }
 
-/* Imagem da Arte (Box-Art) */
 .hero__poster {
   width: 100%;
   height: auto;
   object-fit: contain;
   border-radius: 12px;
   filter: contrast(1.05) saturate(1.1);
-  transition: transform 0.6s ease;
   display: block;
 }
 
-
-/* Logo VI sobreposto no centro da imagem */
-.hero__logo-overlay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); /* Centralização perfeita baseada no centro próprio */
-  width: 60%;
-  pointer-events: none; /* Garante que o mouse possa interagir com o que está embaixo */
-  animation: logo-glow 3s ease-in-out infinite alternate; /* Efeito de brilho pulsante */
-}
-
-/* SVG do logo VI */
-.logo-vi-svg {
-  width: 100%;
-  height: auto;
-}
-
-/* Barra de Destaques Inferior */
 .hero__bottom-bar {
   width: 100%;
   background: rgba(13, 13, 26, 0.75);
   backdrop-filter: blur(10px);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   padding: 0.85rem 0;
-  z-index: 4; /* Barra de destaques por cima do vídeo */
+  z-index: 4;
 }
 
 .hero__bottom-container {
@@ -301,7 +208,6 @@ body {
   text-align: right;
 }
 
-/* Eyebrows da barra ("Lançamento" / "Disponível em") — reduzidos */
 .hero__eyebrow {
   font-family: var(--font-display-cond);
   font-size: 0.62rem;
@@ -321,7 +227,6 @@ body {
   color: var(--text-primary);
 }
 
-/* Botão "Reserve Agora" dentro da barra — versão compacta */
 .hero__bottom-bar .btn {
   font-size: 0.82rem;
   padding: 0.5rem 1.4rem;
@@ -335,30 +240,17 @@ body {
   color: var(--text-secondary);
 }
 
-.platform-icons svg {
-  width: 18px;
-  height: 18px;
-  opacity: 0.7;
-  transition: opacity 0.3s;
-}
-
-.platform-icons svg:hover {
-  opacity: 1;
-  color: var(--neon-cyan);
-}
-
 .platform-text {
   font-size: 0.72rem;
   font-weight: bold;
 }
 
-/* Dica de Scroll: seta no rodapé do hero (abaixo da barra inferior) */
 .hero__scroll-hint {
   position: absolute;
   bottom: 0px;
   left: 0;
   right: 0;
-  margin-inline: auto; /* Centraliza horizontalmente sem usar transform (preserva o bounce) */
+  margin-inline: auto;
   width: fit-content;
   display: flex;
   flex-direction: column;
@@ -366,12 +258,11 @@ body {
   gap: 0.5rem;
   color: var(--text-secondary);
   opacity: 0.7;
-  z-index: 4; /* Acima do scrim/vídeo */
+  z-index: 4;
   animation: bounce 2s infinite;
 }
 
-
-/* 6. SEÇÃO INTERMEDIÁRIA (História) */
+/* Seção História */
 .story-section {
   padding: 120px 0;
   background-color: var(--bg-night);
@@ -383,10 +274,9 @@ body {
   z-index: 4;
 }
 
-/* Título Rosa/Coral Vice City */
 .story-title {
   font-family: var(--font-display-cond);
-  font-size: clamp(2.5rem, 6vw, 4.5rem); /* Tamanho responsivo proporcional ao display */
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
   font-weight: 700;
   color: var(--neon-coral);
   text-transform: uppercase;
@@ -395,7 +285,6 @@ body {
   letter-spacing: -0.01em;
 }
 
-/* Caixa de texto com largura máxima ideal para leitura rápida */
 .story-content {
   max-width: 800px;
   margin: 0 auto;
@@ -408,8 +297,7 @@ body {
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
-
-/* 6.5. SEÇÃO DE MÍDIA (título + texto + card de imagem com overlay) */
+/* Seção Mídia */
 .media-section {
   padding: 100px 0;
   background-color: var(--bg-night);
@@ -417,28 +305,6 @@ body {
   z-index: 4;
 }
 
-/* Título da seção (rosa neon, alinhado à esquerda) */
-.media-section__title {
-  font-family: var(--font-display-cond);
-  font-size: clamp(2.2rem, 5vw, 3.5rem);
-  font-weight: 700;
-  color: var(--neon-pink);
-  text-transform: uppercase;
-  line-height: 1.05;
-  margin-bottom: 1rem;
-  letter-spacing: -0.01em;
-}
-
-/* Parágrafo introdutório da seção */
-.media-section__text {
-  max-width: 720px;
-  font-size: clamp(1.05rem, 2vw, 1.3rem);
-  color: var(--text-secondary);
-  line-height: 1.7;
-  margin-bottom: 2.5rem;
-}
-
-/* Card de imagem com texto sobreposto */
 .media-card {
   position: relative;
   width: 100%;
@@ -455,7 +321,6 @@ body {
   display: block;
 }
 
-/* Gradiente sobre a imagem para garantir leitura do texto */
 .media-card__overlay {
   position: absolute;
   inset: 0;
@@ -471,7 +336,6 @@ body {
               transparent 70%);
 }
 
-/* Título grande do card (creme quente, fonte condensada) */
 .media-card__title {
   font-family: var(--font-display-cond);
   font-size: clamp(2rem, 5vw, 3.5rem);
@@ -483,7 +347,6 @@ body {
   letter-spacing: 0.01em;
 }
 
-/* Subtítulo branco abaixo do título do card */
 .media-card__subtitle {
   font-family: var(--font-ui);
   font-size: clamp(0.95rem, 1.6vw, 1.15rem);
@@ -493,7 +356,6 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* Botão "Ver agora" com ícone de play (fonte UI, não serifada) */
 .media-card__btn {
   gap: 0.5rem;
   padding: 0.75rem 1.6rem;
@@ -501,8 +363,7 @@ body {
   font-weight: 700;
 }
 
-
-/* 7. FOOTER */
+/* Footer */
 .footer {
   background-color: var(--bg-dark);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -511,7 +372,6 @@ body {
   z-index: 4;
 }
 
-/* Conteúdo do footer: coluna única centralizada */
 .footer__inner {
   display: flex;
   flex-direction: column;
@@ -520,7 +380,6 @@ body {
   gap: 1.5rem;
 }
 
-/* Logo no footer */
 .footer__logo {
   font-family: var(--font-display-cond);
   font-size: 2rem;
@@ -530,7 +389,6 @@ body {
   text-shadow: 0 0 15px rgba(255, 61, 139, 0.3);
 }
 
-/* Links institucionais (em linha, centralizados) */
 .footer__nav {
   display: flex;
   flex-wrap: wrap;
@@ -549,13 +407,11 @@ body {
   color: var(--neon-pink);
 }
 
-/* Redes sociais */
 .footer__socials {
   display: flex;
   gap: 1rem;
 }
 
-/* Links Sociais redondos estilo retrô */
 .social-link {
   width: 40px;
   height: 40px;
@@ -578,7 +434,6 @@ body {
   box-shadow: 0 5px 15px rgba(255, 61, 139, 0.4);
 }
 
-/* Classificação indicativa + copyright */
 .footer__rating,
 .footer__copy {
   color: var(--text-muted);
@@ -597,37 +452,17 @@ body {
   color: var(--neon-pink);
 }
 
-
-/* 8. ANIMAÇÕES (KEYFRAMES) */
-
-/* Brilho Pulsante no Logo VI */
-@keyframes logo-glow {
-  0% {
-    filter: drop-shadow(0 0 5px rgba(255, 61, 139, 0.3)) drop-shadow(0 0 10px rgba(255, 122, 24, 0.1));
-  }
-  100% {
-    filter: drop-shadow(0 0 15px rgba(255, 61, 139, 0.7)) drop-shadow(0 0 30px rgba(255, 122, 24, 0.4));
-  }
-}
-
-/* Seta de rolagem se movimentando */
+/* Animações */
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-8px);
-  }
-  60% {
-    transform: translateY(-4px);
-  }
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-8px); }
+  60% { transform: translateY(-4px); }
 }
 
-/* Efeito fade-in com subida para elementos de Scroll Reveal */
 .reveal {
   opacity: 0;
   transform: translateY(30px);
-  transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), 
+  transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1),
               transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -636,12 +471,8 @@ body {
   transform: translateY(0);
 }
 
-
-/* 9. RESPONSIVIDADE (MEDIA QUERIES)
-   Ajustes de layout para que o site funcione perfeitamente em celulares.
-*/
+/* Responsividade */
 @media (max-width: 900px) {
-  /* No mobile, mudamos a barra inferior para formato de lista vertical */
   .hero__bottom-container {
     flex-direction: column;
     text-align: center;
@@ -658,13 +489,10 @@ body {
 }
 
 @media (max-width: 700px) {
-  /* O card paisagem (16/9) fica baixo demais no celular e corta o texto.
-     Deixamos mais alto (retrato) para o conteúdo do overlay caber. */
   .media-card {
     aspect-ratio: 4 / 5;
   }
 
-  /* Mais contraste no gradiente, já que o texto ocupa mais área vertical */
   .media-card__overlay {
     background: linear-gradient(to top,
                 rgba(13, 13, 26, 0.9) 0%,
