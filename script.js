@@ -270,10 +270,12 @@ function setupHero() {
   initHeroTimeline();
 
   // No mobile o scrub por currentTime não é confiável (iOS não renderiza seeks
-  // sem play num gesto e não toca bem blob: URLs). Em telas de toque, o vídeo
-  // toca sozinho em loop (autoplay mudo); no desktop, é scrubado pelo scroll.
-  const isTouch = window.matchMedia('(pointer: coarse)').matches;
-  if (isTouch) {
+  // sem play num gesto e não toca bem blob: URLs). Só em mobile de verdade o
+  // vídeo toca em loop; no desktop (mesmo com tela de toque) mantém o scrub.
+  // Usamos "(hover: none)" para EXCLUIR notebooks/desktops com touch + mouse:
+  // só dispositivos sem hover (celular/tablet) caem no loop.
+  const isMobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  if (isMobile) {
     setupHeroVideoLoop();
   } else {
     setupHeroVideoScrub();
