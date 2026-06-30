@@ -143,9 +143,9 @@ body {
 
 /* Classe adicionada via JavaScript quando rolamos a página */
 .navbar--scrolled {
-  background-color: rgba(13, 13, 26, 0.85); /* Fundo índigo com transparência */
-  backdrop-filter: blur(12px); /* Desfoque moderno */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: transparent;
+  backdrop-filter: none;
+  border-bottom: none;
 }
 
 .navbar__container {
@@ -154,7 +154,7 @@ body {
   align-items: center;
   max-width: var(--container-max);
   margin: 0 auto;
-  padding: 1.25rem var(--gutter);
+  padding: 0.5rem var(--gutter);
 }
 
 /* Monograma "VI" */
@@ -199,11 +199,11 @@ body {
   min-height: 100svh; /* Ocupa exatamente a tela cheia no mobile e desktop */
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Navbar no topo, Poster no centro, Barra inferior na base */
+  justify-content: center; /* Agrupa poster + barra inferior centralizados verticalmente */
   align-items: center;
   position: relative;
   overflow: hidden;
-  padding-top: 80px; /* Evita que a navbar cubra o conteúdo do topo */
+  padding-top: 40px; /* Evita que a navbar cubra o conteúdo do topo */
 }
 
 /* Vídeo promocional de fundo (controlado por GSAP) */
@@ -212,7 +212,8 @@ body {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover;          /* Preenche toda a área mantendo a proporção */
+  object-position: center top; /* Ancora no topo: o corte acontece embaixo, nunca em cima */
   z-index: 1;
   opacity: 0;
   pointer-events: none;
@@ -222,33 +223,22 @@ body {
   will-change: transform;
 }
 
-/* Camada escura de degradê sob a página (Scrim) */
-.hero__scrim {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at center, rgba(13, 13, 26, 0.2) 0%, var(--bg-night) 90%),
-              linear-gradient(180deg, transparent 60%, var(--bg-night) 100%);
-  z-index: 2; /* Fica por cima do vídeo para manter o contraste das letras */
-}
-
 .hero__container {
   width: 100%;
-  flex: 1; /* Faz o container crescer para ocupar o espaço do meio */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   z-index: 3; /* Conteúdo por cima de tudo */
   position: relative;
-  padding: 2rem 0;
+  padding: 1rem 0 0.5rem; /* Pouco espaço abaixo: aproxima a barra da imagem */
 }
 
 /* Wrapper do poster para manter as proporções */
 .hero__poster-wrapper {
   position: relative;
-  max-width: 480px;
+  max-width: 650px;
   width: 90%;
-  aspect-ratio: 16 / 13; /* Proporção do grid box-art */
   border-radius: 12px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
   overflow: visible; /* Permite que efeitos saiam sutilmente */
@@ -257,17 +247,14 @@ body {
 /* Imagem da Arte (Box-Art) */
 .hero__poster {
   width: 100%;
-  height: 100%;
-  object-fit: cover; /* Ajusta a imagem perfeitamente dentro do container */
+  height: auto;
+  object-fit: contain;
   border-radius: 12px;
   filter: contrast(1.05) saturate(1.1);
   transition: transform 0.6s ease;
+  display: block;
 }
 
-/* Efeito de zoom ao passar o mouse no poster */
-.hero__poster-wrapper:hover .hero__poster {
-  transform: scale(1.02);
-}
 
 /* Logo VI sobreposto no centro da imagem */
 .hero__logo-overlay {
@@ -292,7 +279,7 @@ body {
   background: rgba(13, 13, 26, 0.75);
   backdrop-filter: blur(10px);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 1.5rem 0;
+  padding: 0.85rem 0;
   z-index: 4; /* Barra de destaques por cima do vídeo */
 }
 
@@ -303,7 +290,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 2rem;
+  gap: 1.25rem;
 }
 
 .hero__date-info, .hero__platforms {
@@ -314,24 +301,43 @@ body {
   text-align: right;
 }
 
+/* Eyebrows da barra ("Lançamento" / "Disponível em") — reduzidos */
+.hero__eyebrow {
+  font-family: var(--font-display-cond);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.1rem;
+}
+
 .hero__date {
   font-family: var(--font-display-cond);
-  font-size: 1.6rem;
+  font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   color: var(--text-primary);
 }
 
+/* Botão "Reserve Agora" dentro da barra — versão compacta */
+.hero__bottom-bar .btn {
+  font-size: 0.82rem;
+  padding: 0.5rem 1.4rem;
+}
+
 .platform-icons {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.75rem;
+  gap: 0.5rem;
   color: var(--text-secondary);
 }
 
 .platform-icons svg {
+  width: 18px;
+  height: 18px;
   opacity: 0.7;
   transition: opacity 0.3s;
 }
@@ -342,23 +348,25 @@ body {
 }
 
 .platform-text {
-  font-size: 0.9rem;
+  font-size: 0.72rem;
   font-weight: bold;
 }
 
-/* Dica de Scroll: Animação sutil de sobe e desce */
+/* Dica de Scroll: seta no rodapé do hero (abaixo da barra inferior) */
 .hero__scroll-hint {
   position: absolute;
-  bottom: 20px;
+  bottom: 0px;
+  left: 0;
+  right: 0;
+  margin-inline: auto; /* Centraliza horizontalmente sem usar transform (preserva o bounce) */
+  width: fit-content;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
   color: var(--text-secondary);
   opacity: 0.7;
+  z-index: 4; /* Acima do scrim/vídeo */
   animation: bounce 2s infinite;
 }
 
@@ -401,6 +409,99 @@ body {
 }
 
 
+/* 6.5. SEÇÃO DE MÍDIA (título + texto + card de imagem com overlay) */
+.media-section {
+  padding: 100px 0;
+  background-color: var(--bg-night);
+  position: relative;
+  z-index: 4;
+}
+
+/* Título da seção (rosa neon, alinhado à esquerda) */
+.media-section__title {
+  font-family: var(--font-display-cond);
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  color: var(--neon-pink);
+  text-transform: uppercase;
+  line-height: 1.05;
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+
+/* Parágrafo introdutório da seção */
+.media-section__text {
+  max-width: 720px;
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+}
+
+/* Card de imagem com texto sobreposto */
+.media-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+.media-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Gradiente sobre a imagem para garantir leitura do texto */
+.media-card__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  text-align: right;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  background: linear-gradient(to top,
+              rgba(13, 13, 26, 0.88) 0%,
+              rgba(13, 13, 26, 0.25) 45%,
+              transparent 70%);
+}
+
+/* Título grande do card (creme quente, fonte condensada) */
+.media-card__title {
+  font-family: var(--font-display-cond);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #f3e4c4;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+
+/* Subtítulo branco abaixo do título do card */
+.media-card__subtitle {
+  font-family: var(--font-ui);
+  font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+  color: var(--text-primary);
+  max-width: 420px;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+/* Botão "Ver agora" com ícone de play (fonte UI, não serifada) */
+.media-card__btn {
+  gap: 0.5rem;
+  padding: 0.75rem 1.6rem;
+  font-family: var(--font-ui);
+  font-weight: 700;
+}
+
+
 /* 7. FOOTER */
 .footer {
   background-color: var(--bg-dark);
@@ -410,93 +511,48 @@ body {
   z-index: 4;
 }
 
-.footer__top {
+/* Conteúdo do footer: coluna única centralizada */
+.footer__inner {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 4rem;
-  margin-bottom: 4rem;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
 }
 
 /* Logo no footer */
 .footer__logo {
   font-family: var(--font-display-cond);
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   color: var(--text-primary);
   text-shadow: 0 0 15px rgba(255, 61, 139, 0.3);
 }
 
-/* Caixa da Newsletter */
-.footer__newsletter {
-  max-width: 500px;
-  flex: 1;
+/* Links institucionais (em linha, centralizados) */
+.footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1.5rem;
 }
 
-.newsletter__text h3 {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  margin-bottom: 0.5rem;
-}
-
-.newsletter__text p {
+.footer__nav a {
   color: var(--text-secondary);
-  font-size: 0.95rem;
-  margin-bottom: 1.5rem;
-}
-
-/* Formulário com input e botão integrados */
-.newsletter__form {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.newsletter__input {
-  flex: 1;
-  background-color: var(--bg-elevated);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 30px;
-  padding: 0.8rem 1.5rem;
-  color: var(--text-primary);
-  font-family: var(--font-ui);
-  font-size: 0.95rem;
-  outline: none;
-  transition: all 0.3s;
-}
-
-/* Ao selecionar o campo de input */
-.newsletter__input:focus {
-  border-color: var(--neon-pink);
-  box-shadow: 0 0 10px rgba(255, 61, 139, 0.2);
-}
-
-.newsletter__success-msg {
-  display: none; /* Oculto por padrão, ativado pelo JS */
-  color: var(--neon-cyan);
+  text-decoration: none;
   font-size: 0.9rem;
-  margin-top: 0.75rem;
-  font-weight: bold;
+  transition: color 0.3s;
 }
 
-.footer__divider {
-  border: 0;
-  height: 1px;
-  background-color: rgba(255, 255, 255, 0.08);
-  margin-bottom: 2.5rem;
+.footer__nav a:hover {
+  color: var(--neon-pink);
 }
 
-.footer__bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap; /* Quebra linha caso não caiba em telas muito pequenas */
-  gap: 2rem;
-}
-
+/* Redes sociais */
 .footer__socials {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 /* Links Sociais redondos estilo retrô */
@@ -522,66 +578,23 @@ body {
   box-shadow: 0 5px 15px rgba(255, 61, 139, 0.4);
 }
 
+/* Classificação indicativa + copyright */
+.footer__rating,
 .footer__copy {
   color: var(--text-muted);
-  font-size: 0.85rem;
-  max-width: 600px;
+  font-size: 0.8rem;
   line-height: 1.5;
+  max-width: 640px;
 }
 
-
-/* 7.5. SEÇÃO BUILD SEQUENCE */
-.build-section {
-  position: relative;
-  width: 100%;
-  height: 100dvh; /* Ocupa a viewport inteira */
-  overflow: hidden;
-  background-color: var(--bg-night);
-}
-
-.build-section__video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 1;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  contain: strict;
-  will-change: transform;
-}
-
-.build-section__overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 2; /* Fica por cima do vídeo */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  background: radial-gradient(circle at center, rgba(13, 13, 26, 0.4) 0%, rgba(13, 13, 26, 0.85) 100%);
-  pointer-events: none; /* Garante que o scroll continue pelo mouse */
-  padding: 0 var(--gutter);
-}
-
-.build-section__title {
-  font-family: var(--font-display-cond);
-  font-size: clamp(2.2rem, 5vw, 4rem);
-  text-transform: uppercase;
-  color: var(--neon-pink);
-  margin-bottom: 0.75rem;
-  text-shadow: 0 0 20px rgba(255, 61, 139, 0.5);
-}
-
-.build-section__subtitle {
-  font-family: var(--font-ui);
-  font-size: clamp(1rem, 2vw, 1.25rem);
+.footer__rating a {
   color: var(--text-secondary);
-  max-width: 600px;
-  line-height: 1.5;
+  text-decoration: underline;
+  transition: color 0.3s;
+}
+
+.footer__rating a:hover {
+  color: var(--neon-pink);
 }
 
 
@@ -642,31 +655,20 @@ body {
   .platform-icons {
     justify-content: center;
   }
-
-  /* Footer top em coluna única */
-  .footer__top {
-    flex-direction: column;
-    gap: 2.5rem;
-  }
-  
-  .footer__newsletter {
-    max-width: 100%;
-    width: 100%;
-  }
 }
 
-@media (max-width: 600px) {
-  /* Formulário de newsletter em coluna única em celulares pequenos */
-  .newsletter__form {
-    flex-direction: column;
-  }
-  
-  .newsletter__input {
-    width: 100%;
+@media (max-width: 700px) {
+  /* O card paisagem (16/9) fica baixo demais no celular e corta o texto.
+     Deixamos mais alto (retrato) para o conteúdo do overlay caber. */
+  .media-card {
+    aspect-ratio: 4 / 5;
   }
 
-  .footer__bottom {
-    flex-direction: column;
-    text-align: center;
+  /* Mais contraste no gradiente, já que o texto ocupa mais área vertical */
+  .media-card__overlay {
+    background: linear-gradient(to top,
+                rgba(13, 13, 26, 0.9) 0%,
+                rgba(13, 13, 26, 0.35) 55%,
+                transparent 80%);
   }
 }

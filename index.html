@@ -20,13 +20,6 @@
     <div class="navbar__container">
       <!-- Logo "VI" estilo neon -->
       <a href="#" class="navbar__logo">VI</a>
-      
-      <!-- Botão Hambúrguer para menu mobile (para iniciantes verem a estrutura) -->
-      <button class="navbar__toggle" id="mobile-menu" aria-label="Abrir Menu">
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-      </button>
     </div>
   </nav>
 
@@ -35,45 +28,11 @@
     <!-- Vídeo que avança/retrocede com o scroll (GSAP ScrollTrigger) -->
     <video class="hero__video" src="assets/magnific_video-curto-de-5-a-camera_aQetRV4fSh.mp4" muted playsinline preload="auto"></video>
 
-    <!-- Efeito de sombreamento (scrim) para garantir leitura do texto -->
-    <div class="hero__scrim"></div>
-    
     <div class="hero__container">
       <!-- Container do poster central -->
       <div class="hero__poster-wrapper">
         <!-- Imagem gerada do Box Art -->
         <img src="assets/gta_box_art.png" alt="GTA VI Box Art Artwork" class="hero__poster">
-        
-        <!-- Logo "VI" grande estilizado em SVG sobreposto no centro da imagem -->
-        <div class="hero__logo-overlay">
-          <svg viewBox="0 0 200 200" class="logo-vi-svg">
-            <defs>
-              <!-- Gradiente Vice City: Rosa neon para Laranja sunset -->
-              <linearGradient id="gta-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#ff3d8b" />
-                <stop offset="50%" stop-color="#e0218a" />
-                <stop offset="100%" stop-color="#ff7a18" />
-              </linearGradient>
-              <!-- Sombra para destacar o logo da imagem de fundo -->
-              <filter id="shadow">
-                <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.8"/>
-              </filter>
-            </defs>
-            <!-- Forma da letra V e I estilizada -->
-            <g filter="url(#shadow)">
-              <path d="M20 20 L65 20 L95 140 L125 20 L170 20 L115 180 L75 180 Z" fill="url(#gta-grad)" />
-              <rect x="155" y="20" width="25" height="160" fill="url(#gta-grad)" />
-            </g>
-          </svg>
-        </div>
-      </div>
-
-      <!-- Scroll Hint: seta sutil indicando que há mais conteúdo abaixo -->
-      <div class="hero__scroll-hint">
-        <span>Role para ver mais</span>
-        <svg class="arrow-down" viewBox="0 0 24 24" width="24" height="24">
-          <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/>
-        </svg>
       </div>
     </div>
 
@@ -92,18 +51,17 @@
           <p class="hero__eyebrow">Disponível em</p>
           <!-- Ícones das plataformas em SVG -->
           <div class="platform-icons">
-            <!-- PlayStation Icon -->
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" title="PS5">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15H9v-2h2v2zm0-4H9V7h2v6zm4 4h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-            </svg>
-            <!-- Xbox Icon -->
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" title="Xbox Series X|S">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
-            </svg>
             <span class="platform-text">PS5 · Xbox Series X|S</span>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Scroll Hint: seta sutil posicionada no rodapé do hero, abaixo da barra inferior -->
+    <div class="hero__scroll-hint">
+      <svg class="arrow-down" viewBox="0 0 24 24" width="24" height="24">
+        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/>
+      </svg>
     </div>
   </header>
 
@@ -121,54 +79,59 @@
       </div>
     </section>
 
-    <!-- SEÇÃO BUILD SEQUENCE: Vídeo animado em reverso pelo scroll -->
-    <section class="build-section" id="build-section">
-      <!-- Vídeo que avança/retrocede com o scroll em formato invertido -->
-      <video class="build-section__video" src="assets/build_sequence.mp4" muted playsinline preload="auto"></video>
-      
-      <!-- Overlay de texto informativo sobre a montagem -->
-      <div class="build-section__overlay">
-        <div class="container">
-          <p class="eyebrow">Build Sequence</p>
-          <h2 class="build-section__title">Montagem de Leonida</h2>
-          <p class="build-section__subtitle">A evolução de Vice City ao pôr do sol frame por frame (Invertido no scroll).</p>
-        </div>
+    <!-- SEÇÃO DE MÍDIA: título, texto e card de imagem com título/texto sobrepostos -->
+    <section class="media-section">
+      <div class="container reveal">
+        
+        <!-- Card de imagem com overlay (eyebrow, título, subtítulo e botão) -->
+        <article class="media-card">
+          <img src="assets/gta1.png" alt="Cena do trailer de GTA VI" class="media-card__img">
+          <div class="media-card__overlay">
+            <p class="eyebrow">Vídeos</p>
+            <h3 class="media-card__title">2º Trailer</h3>
+            <p class="media-card__subtitle">A maior e mais imersiva evolução da série Grand Theft Auto até o momento.</p>
+            <a href="#" class="btn btn--primary media-card__btn">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              Ver agora
+            </a>
+          </div>
+        </article>
       </div>
     </section>
+
   </main>
 
-  <!-- FOOTER: Rodapé clássico da Rockstar, com newsletter e links institucionais -->
+  <!-- FOOTER: rodapé simples e centralizado -->
   <footer class="footer">
-    <div class="container">
-      <div class="footer__top">
-        <!-- Logo GTA VI em miniatura centralizado -->
-        <div class="footer__logo">GTA VI</div>
-        
-        <!-- Newsletter: Receber Rockstar Propaganda -->
-        <div class="footer__newsletter">
-          <div class="newsletter__text">
-            <h3>Receber Rockstar Propaganda</h3>
-            <p>Fique por dentro das novidades, atualizações de jogos e ofertas exclusivas.</p>
-          </div>
-          <form class="newsletter__form" id="newsletter-form">
-            <input type="email" placeholder="Seu e-mail profissional" required class="newsletter__input">
-            <button type="submit" class="btn btn--secondary">Inscrever-se</button>
-          </form>
-          <!-- Mensagem de confirmação que aparece dinamicamente via JS -->
-          <p class="newsletter__success-msg" id="newsletter-success">Obrigado por se inscrever!</p>
-        </div>
+    <div class="container footer__inner">
+      <!-- Logo -->
+      <div class="footer__logo">GTA VI</div>
+
+      <!-- Links institucionais / jurídicos -->
+      <nav class="footer__nav">
+        <a href="#">Corporativo</a>
+        <a href="#">Privacidade</a>
+        <a href="#">Configurações de cookie</a>
+        <a href="#">Política de cookies</a>
+        <a href="#">Jurídico</a>
+        <a href="#">Não vender nem compartilhar as minhas informações pessoais</a>
+      </nav>
+
+      <!-- Redes sociais -->
+      <div class="footer__socials">
+        <a href="#" aria-label="YouTube" class="social-link">YT</a>
+        <a href="#" aria-label="Instagram" class="social-link">IG</a>
+        <a href="#" aria-label="X / Twitter" class="social-link">X</a>
       </div>
 
-      <hr class="footer__divider">
-
-      <div class="footer__bottom">
-        <div class="footer__socials">
-          <a href="#" aria-label="YouTube" class="social-link">YT</a>
-          <a href="#" aria-label="Instagram" class="social-link">IG</a>
-          <a href="#" aria-label="X / Twitter" class="social-link">X</a>
-        </div>
-        <p class="footer__copy">&copy; 2026 Rockstar Games, Inc. GTA VI, Grand Theft Auto e marcas registradas são propriedade da Take-Two Interactive Software.</p>
-      </div>
+      <!-- Classificação indicativa + copyright -->
+      <p class="footer__rating">
+        Pode incluir conteúdo inapropriado para crianças. Acesse
+        <a href="https://www.gov.br" target="_blank" rel="noopener">gov.br</a> para ver informações da classificação indicativa.
+      </p>
+      <p class="footer__copy">&copy; 2026 Rockstar Games, Inc. GTA VI, Grand Theft Auto e marcas registradas são propriedade da Take-Two Interactive Software.</p>
     </div>
   </footer>
 

@@ -11,6 +11,34 @@ if (typeof gsap !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+// Sempre inicia/recarrega a página no TOPO. O hero é "pinado" e sua animação
+// depende de começar do scroll 0; restaurar uma posição mais abaixo deixava o
+// conteúdo do hero preso (sumido).
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
+// Pula para o topo SEM animação. Como o CSS usa scroll-behavior: smooth, um
+// scrollTo normal "subiria" a página de forma animada no F5. Desativamos o
+// comportamento suave só durante o salto e restauramos em seguida.
+function jumpToTop() {
+  const html = document.documentElement;
+  const prev = html.style.scrollBehavior;
+  html.style.scrollBehavior = 'auto';
+  window.scrollTo(0, 0);
+  html.style.scrollBehavior = prev;
+}
+
+// Antes de descarregar a página (F5), rola pro topo: assim a posição que o
+// navegador salva para "restaurar" já é o topo. É a garantia mais forte.
+window.addEventListener('beforeunload', jumpToTop);
+
+// Reforços: ao mostrar a página (inclusive vindo do cache) e após o load,
+// garante o topo mesmo que algo tente restaurar a posição.
+window.addEventListener('pageshow', jumpToTop);
+window.addEventListener('load', () => requestAnimationFrame(jumpToTop));
+jumpToTop();
+
 /* ========================================================================
    1. SETUP DO MENU / HEADER (setupNavbar)
    Gerencia os efeitos visuais de rolagem e clique no menu de navegação.
@@ -189,16 +217,16 @@ function createMomentumVideoScrubber(video, options = {}) {
 
 const heroVideo = document.querySelector('.hero__video');
 let heroScrollTrigger = null;
-let buildScrollTrigger = null;
 let heroVideoScrubber = null;
-let buildVideoScrubber = null;
 
-function initHeroGSAPAnimation() {
+// Cria o ScrollTrigger pinado + animação de fade do hero.
+// IMPORTANTE: é criado de forma SÍNCRONA no carregamento, SEM esperar o vídeo.
+// Assim o pin existe desde o início. Se ele só fosse criado após o download do
+// vídeo (12MB), o usuário poderia rolar a página antes do pin existir — e, ao
+// voltar pra cima, o conteúdo do hero não reaparecia (ficava preso em opacity 0).
+function initHeroTimeline() {
   const heroSection = document.querySelector('.hero');
   if (!heroSection || !heroVideo) return;
-
-  heroVideoScrubber = createMomentumVideoScrubber(heroVideo);
-  heroVideoScrubber.markReady(0);
 
   const tl = gsap.timeline({
     scrollTrigger: {
@@ -207,16 +235,17 @@ function initHeroGSAPAnimation() {
       end: "+=2500",
       scrub: 1,
       pin: true,
-      anticipatePin: 1
+      anticipatePin: 1,
+      invalidateOnRefresh: true // Recalcula os valores da animação no resize (evita estado "preso")
     }
   });
 
   heroScrollTrigger = tl.scrollTrigger;
 
-  tl.to(".hero__container, .hero__bottom-bar", {
+  tl.to(".hero__container, .hero__bottom-bar, .hero__scroll-hint", {
     opacity: 0,
     scale: 0.6,
-    duration: 1.5,
+    duration: 0.1,
     ease: "power2.out"
   });
 
@@ -226,9 +255,21 @@ function initHeroGSAPAnimation() {
   }, "<");
 }
 
+// Conecta o scrubber de momentum quando o vídeo estiver pronto.
+// O loop do ticker já verifica se o scrubber existe, então antes disso
+// o vídeo simplesmente não é avançado (e está com opacity 0 mesmo).
+function attachHeroVideoScrubber() {
+  heroVideoScrubber = createMomentumVideoScrubber(heroVideo);
+  heroVideoScrubber.markReady(0);
+}
+
 function setupHero() {
   if (!heroVideo) return;
 
+  // 1) Cria o pin/animação IMEDIATAMENTE (não depende do vídeo).
+  initHeroTimeline();
+
+  // 2) Baixa o vídeo em segundo plano e liga o scrubber quando carregar.
   const originalSrc = heroVideo.src;
 
   fetch(originalSrc)
@@ -237,107 +278,24 @@ function setupHero() {
       return response.blob();
     })
     .then(blob => {
-      const blobURL = URL.createObjectURL(blob);
-      heroVideo.src = blobURL;
-      
+      heroVideo.src = URL.createObjectURL(blob);
+
       heroVideo.addEventListener('loadedmetadata', function init() {
         heroVideo.play().then(() => heroVideo.pause()).catch(() => {});
-        initHeroGSAPAnimation();
+        attachHeroVideoScrubber();
         heroVideo.removeEventListener('loadedmetadata', init);
       });
     })
     .catch(() => {
       heroVideo.load();
-      heroVideo.play().then(() => heroVideo.pause()).catch(() => {});
-      initHeroGSAPAnimation();
+      heroVideo.addEventListener('loadedmetadata', function init() {
+        heroVideo.play().then(() => heroVideo.pause()).catch(() => {});
+        attachHeroVideoScrubber();
+        heroVideo.removeEventListener('loadedmetadata', init);
+      }, { once: true });
     });
 }
 
-/* ========================================================================
-   4. SETUP DA SEÇÃO BUILD SEQUENCE (setupBuildSequence)
-   [OBRIGATÓRIO] Sequência pinada de vídeo rodando invertida no scroll
-   ======================================================================== */
-let buildVideoElement = null;
-
-function setupBuildSequence() {
-  buildVideoElement = document.querySelector('.build-section__video');
-  const buildSection = document.getElementById('build-section');
-
-  // Checa resiliência: se os elementos existem na página
-  if (!buildVideoElement || !buildSection) return;
-
-  const originalSrc = buildVideoElement.src;
-
-  // Pré-carrega o vídeo como Blob na RAM para garantir que a rolagem invertida
-  // seja extremamente fluida e não sofra atrasos de download.
-  fetch(originalSrc)
-    .then(response => {
-      if (!response.ok) throw new Error("Erro de rede no Build Video");
-      return response.blob();
-    })
-    .then(blob => {
-      const blobURL = URL.createObjectURL(blob);
-      buildVideoElement.src = blobURL;
-
-      buildVideoElement.addEventListener('loadedmetadata', function init() {
-        // Pré-carrega os frames na RAM reproduzindo e pausando rapidamente
-        buildVideoElement.play().then(() => {
-          buildVideoElement.pause();
-        }).catch(() => {});
-
-        initBuildTimeline(buildVideoElement.duration);
-        buildVideoElement.removeEventListener('loadedmetadata', init);
-      });
-    })
-    .catch(err => {
-      console.warn("CORS/Erro ao carregar Build Video como Blob. Usando fallback progressivo.", err);
-      
-      buildVideoElement.load();
-      buildVideoElement.addEventListener('loadedmetadata', function init() {
-        buildVideoElement.play().then(() => {
-          buildVideoElement.pause();
-        }).catch(() => {});
-
-        initBuildTimeline(buildVideoElement.duration);
-        buildVideoElement.removeEventListener('loadedmetadata', init);
-      });
-
-      // Se os metadados já estiverem prontos no cache
-      if (buildVideoElement.readyState >= 1) {
-        initBuildTimeline(buildVideoElement.duration);
-      } else {
-        // Fallback final imediato se o navegador demorar a responder (usa duração padrão estimada de 5s)
-        initBuildTimeline(5);
-      }
-    });
-}
-
-function initBuildTimeline(duration) {
-  const videoDuration = duration || 5;
-
-  buildVideoScrubber = createMomentumVideoScrubber(buildVideoElement, { invert: true });
-  buildVideoScrubber.markReady(videoDuration);
-  buildVideoScrubber.snapTo(videoDuration);
-
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: ".build-section",
-      start: "top top",
-      end: "+=3000",
-      scrub: 1,
-      pin: true,
-      anticipatePin: 1,
-      onLeave: () => {
-        buildVideoScrubber.snapTo(0);
-      },
-      onLeaveBack: () => {
-        buildVideoScrubber.snapTo(videoDuration);
-      }
-    }
-  });
-
-  buildScrollTrigger = tl.scrollTrigger;
-}
 
 function startVideoScrubLoop() {
   gsap.ticker.add((_, deltaTime) => {
@@ -346,11 +304,6 @@ function startVideoScrubLoop() {
     if (heroScrollTrigger?.isActive && heroVideoScrubber) {
       heroVideoScrubber.setProgress(getRawProgress(heroScrollTrigger));
       heroVideoScrubber.tick(dt);
-    }
-
-    if (buildScrollTrigger?.isActive && buildVideoScrubber) {
-      buildVideoScrubber.setProgress(getRawProgress(buildScrollTrigger));
-      buildVideoScrubber.tick(dt);
     }
   });
 }
@@ -363,6 +316,12 @@ document.addEventListener('DOMContentLoaded', () => {
   setupNavbar();
   setupReveal();
   setupHero();
-  setupBuildSequence();
   startVideoScrubLoop();
+
+  // O ScrollTrigger também guarda a posição de scroll entre reloads.
+  // Limpamos essa memória e garantimos o topo após o pin do hero ser criado.
+  if (window.ScrollTrigger) {
+    ScrollTrigger.clearScrollMemory();
+  }
+  requestAnimationFrame(jumpToTop);
 });
