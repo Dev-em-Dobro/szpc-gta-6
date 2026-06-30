@@ -304,32 +304,21 @@ function setupHeroVideoLoop() {
   window.addEventListener('pointerdown', onGesture, { passive: true });
 }
 
-// DESKTOP: baixa o vídeo como blob (buffer total) e scruba pelo scroll.
+// DESKTOP: scruba o vídeo pelo scroll, usando o carregamento nativo do <video>.
+// Não baixamos um blob: o elemento já tem preload="auto" e o mp4 é fast-start
+// (moov no início), então os metadados ficam prontos quase de imediato e o
+// vídeo aparece rápido — o browser vai bufferizando o resto em segundo plano.
 function setupHeroVideoScrub() {
-  const originalSrc = heroVideo.src;
+  function onReady() {
+    heroVideo.play().then(() => heroVideo.pause()).catch(() => {});
+    attachHeroVideoScrubber();
+  }
 
-  fetch(originalSrc)
-    .then(response => {
-      if (!response.ok) throw new Error();
-      return response.blob();
-    })
-    .then(blob => {
-      heroVideo.src = URL.createObjectURL(blob);
-
-      heroVideo.addEventListener('loadedmetadata', function init() {
-        heroVideo.play().then(() => heroVideo.pause()).catch(() => {});
-        attachHeroVideoScrubber();
-        heroVideo.removeEventListener('loadedmetadata', init);
-      });
-    })
-    .catch(() => {
-      heroVideo.load();
-      heroVideo.addEventListener('loadedmetadata', function init() {
-        heroVideo.play().then(() => heroVideo.pause()).catch(() => {});
-        attachHeroVideoScrubber();
-        heroVideo.removeEventListener('loadedmetadata', init);
-      }, { once: true });
-    });
+  if (heroVideo.readyState >= 1) {
+    onReady(); // metadados já disponíveis
+  } else {
+    heroVideo.addEventListener('loadedmetadata', onReady, { once: true });
+  }
 }
 
 
