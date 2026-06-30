@@ -266,25 +266,44 @@ function attachHeroVideoScrubber() {
 function setupHero() {
   if (!heroVideo) return;
 
-  // 1) Cria o pin/animação IMEDIATAMENTE (não depende do vídeo).
+  // Cria o pin/animação IMEDIATAMENTE (não depende do vídeo).
   initHeroTimeline();
 
-  // No celular (iOS principalmente) o vídeo só decodifica/renderiza frames
-  // após um play() disparado DENTRO de um gesto do usuário. Sem isso, mexer no
-  // currentTime durante o scroll não mostra nada (o vídeo fica preto/em branco).
-  // Aqui destravamos o decoder no primeiro toque/clique do usuário.
-  function unlockHeroVideo() {
-    window.removeEventListener('touchstart', unlockHeroVideo);
-    window.removeEventListener('pointerdown', unlockHeroVideo);
-    const p = heroVideo.play();
-    if (p && typeof p.then === 'function') {
-      p.then(() => heroVideo.pause()).catch(() => {});
-    }
+  // No mobile o scrub por currentTime não é confiável (iOS não renderiza seeks
+  // sem play num gesto e não toca bem blob: URLs). Em telas de toque, o vídeo
+  // toca sozinho em loop (autoplay mudo); no desktop, é scrubado pelo scroll.
+  const isTouch = window.matchMedia('(pointer: coarse)').matches;
+  if (isTouch) {
+    setupHeroVideoLoop();
+  } else {
+    setupHeroVideoScrub();
   }
-  window.addEventListener('touchstart', unlockHeroVideo, { passive: true });
-  window.addEventListener('pointerdown', unlockHeroVideo, { passive: true });
+}
 
-  // 2) Baixa o vídeo em segundo plano e liga o scrubber quando carregar.
+// MOBILE: vídeo toca em loop (mais confiável que scrubar no celular).
+function setupHeroVideoLoop() {
+  heroVideo.loop = true;
+  heroVideo.muted = true;
+
+  const tryPlay = () => {
+    const p = heroVideo.play();
+    if (p && typeof p.catch === 'function') p.catch(() => {});
+  };
+
+  tryPlay(); // tenta autoplay mudo (permitido na maioria dos mobiles)
+
+  // Se o autoplay for bloqueado, destrava no primeiro gesto do usuário.
+  const onGesture = () => {
+    window.removeEventListener('touchstart', onGesture);
+    window.removeEventListener('pointerdown', onGesture);
+    tryPlay();
+  };
+  window.addEventListener('touchstart', onGesture, { passive: true });
+  window.addEventListener('pointerdown', onGesture, { passive: true });
+}
+
+// DESKTOP: baixa o vídeo como blob (buffer total) e scruba pelo scroll.
+function setupHeroVideoScrub() {
   const originalSrc = heroVideo.src;
 
   fetch(originalSrc)
