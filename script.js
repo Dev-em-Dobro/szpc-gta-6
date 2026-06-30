@@ -224,15 +224,20 @@ let heroVideoScrubber = null;
 // Assim o pin existe desde o início. Se ele só fosse criado após o download do
 // vídeo (12MB), o usuário poderia rolar a página antes do pin existir — e, ao
 // voltar pra cima, o conteúdo do hero não reaparecia (ficava preso em opacity 0).
-function initHeroTimeline() {
+function initHeroTimeline(isTouch) {
   const heroSection = document.querySelector('.hero');
   if (!heroSection || !heroVideo) return;
+
+  // No mobile o vídeo só toca (não é scrubado), então não precisa segurar o
+  // hero por todo o percurso: encurtamos o pin para chegar logo na próxima
+  // seção. No desktop o percurso longo é o que o scrub do vídeo usa.
+  const pinDistance = isTouch ? "+=700" : "+=2500";
 
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: ".hero",
       start: "top top",
-      end: "+=2500",
+      end: pinDistance,
       scrub: 1,
       pin: true,
       anticipatePin: 1,
@@ -266,14 +271,16 @@ function attachHeroVideoScrubber() {
 function setupHero() {
   if (!heroVideo) return;
 
-  // Cria o pin/animação IMEDIATAMENTE (não depende do vídeo).
-  initHeroTimeline();
-
-  // Desktop e mobile usam o MESMO scrub pelo scroll. Em telas de toque (iOS),
-  // o vídeo só carrega/renderiza após um play() disparado num gesto do usuário,
-  // então adicionamos esse destravamento. "(hover: none)" garante que só
-  // celular/tablet (sem mouse) entrem nesse caminho extra.
+  // "(hover: none)" garante que só celular/tablet (sem mouse) sejam tratados
+  // como touch — desktop com tela de toque continua como desktop.
   const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+
+  // Cria o pin/animação IMEDIATAMENTE (não depende do vídeo).
+  // No mobile o pin é mais curto (vídeo só toca); no desktop é longo (scrub).
+  initHeroTimeline(isTouch);
+
+  // Em telas de toque (iOS) o vídeo só carrega/renderiza após um play() num
+  // gesto do usuário, então o scrub adiciona esse destravamento.
   setupHeroVideoScrub(isTouch);
 }
 
