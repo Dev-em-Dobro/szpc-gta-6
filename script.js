@@ -269,55 +269,49 @@ function setupHero() {
   // Cria o pin/animação IMEDIATAMENTE (não depende do vídeo).
   initHeroTimeline();
 
-  // No mobile o scrub por currentTime não é confiável (iOS não renderiza seeks
-  // sem play num gesto e não toca bem blob: URLs). Só em mobile de verdade o
-  // vídeo toca em loop; no desktop (mesmo com tela de toque) mantém o scrub.
-  // Usamos "(hover: none)" para EXCLUIR notebooks/desktops com touch + mouse:
-  // só dispositivos sem hover (celular/tablet) caem no loop.
-  const isMobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-  if (isMobile) {
-    setupHeroVideoLoop();
-  } else {
-    setupHeroVideoScrub();
-  }
+  // Desktop e mobile usam o MESMO scrub pelo scroll. Em telas de toque (iOS),
+  // o vídeo só carrega/renderiza após um play() disparado num gesto do usuário,
+  // então adicionamos esse destravamento. "(hover: none)" garante que só
+  // celular/tablet (sem mouse) entrem nesse caminho extra.
+  const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  setupHeroVideoScrub(isTouch);
 }
 
-// MOBILE: vídeo toca em loop (mais confiável que scrubar no celular).
-function setupHeroVideoLoop() {
-  heroVideo.loop = true;
-  heroVideo.muted = true;
+// Scruba o vídeo pelo scroll usando o carregamento nativo do <video>.
+// Sem blob: o elemento tem preload="auto" e o mp4 é fast-start (moov no início),
+// então os metadados ficam prontos rápido e o vídeo aparece logo.
+function setupHeroVideoScrub(isTouch) {
+  let started = false;
 
-  const tryPlay = () => {
-    const p = heroVideo.play();
-    if (p && typeof p.catch === 'function') p.catch(() => {});
-  };
-
-  tryPlay(); // tenta autoplay mudo (permitido na maioria dos mobiles)
-
-  // Se o autoplay for bloqueado, destrava no primeiro gesto do usuário.
-  const onGesture = () => {
-    window.removeEventListener('touchstart', onGesture);
-    window.removeEventListener('pointerdown', onGesture);
-    tryPlay();
-  };
-  window.addEventListener('touchstart', onGesture, { passive: true });
-  window.addEventListener('pointerdown', onGesture, { passive: true });
-}
-
-// DESKTOP: scruba o vídeo pelo scroll, usando o carregamento nativo do <video>.
-// Não baixamos um blob: o elemento já tem preload="auto" e o mp4 é fast-start
-// (moov no início), então os metadados ficam prontos quase de imediato e o
-// vídeo aparece rápido — o browser vai bufferizando o resto em segundo plano.
-function setupHeroVideoScrub() {
-  function onReady() {
+  function start() {
+    if (started) return;
+    started = true;
     heroVideo.play().then(() => heroVideo.pause()).catch(() => {});
     attachHeroVideoScrubber();
   }
 
+  // Desktop: os metadados chegam sozinhos (preload + fast-start).
   if (heroVideo.readyState >= 1) {
-    onReady(); // metadados já disponíveis
+    start();
   } else {
-    heroVideo.addEventListener('loadedmetadata', onReady, { once: true });
+    heroVideo.addEventListener('loadedmetadata', start, { once: true });
+  }
+
+  // Mobile (iOS): o vídeo só carrega/renderiza após um play() num gesto.
+  // No primeiro toque damos play (para destravar) e ligamos o scrub.
+  if (isTouch) {
+    const onGesture = () => {
+      window.removeEventListener('touchstart', onGesture);
+      window.removeEventListener('pointerdown', onGesture);
+      const p = heroVideo.play();
+      if (p && typeof p.then === 'function') {
+        p.then(() => { heroVideo.pause(); start(); }).catch(() => start());
+      } else {
+        start();
+      }
+    };
+    window.addEventListener('touchstart', onGesture, { passive: true });
+    window.addEventListener('pointerdown', onGesture, { passive: true });
   }
 }
 
