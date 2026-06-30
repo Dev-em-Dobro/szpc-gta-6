@@ -493,6 +493,12 @@ body {
     aspect-ratio: 4 / 5;
   }
 
+  /* Mostra mais o lado esquerdo da imagem (o conteúdo "desloca pra direita"),
+     para não cortar o rosto da personagem da esquerda no recorte retrato. */
+  .media-card__img {
+    object-position: 30% center;
+  }
+
   .media-card__overlay {
     background: linear-gradient(to top,
                 rgba(13, 13, 26, 0.9) 0%,
