@@ -1,0 +1,668 @@
+/* 
+========================================================================
+   STYLE SYSTEM — INSPIRADO EM GTA VI / VICE CITY
+   Feito de forma simples, didática e muito bem explicada para iniciantes!
+========================================================================
+*/
+
+/* 1. CONFIGURAÇÃO DE VARIÁVEIS (DESIGN TOKENS)
+   Armazenamos cores e fontes aqui para reutilização em todo o projeto.
+   É uma prática recomendada para manter o código limpo e fácil de manter.
+*/
+:root {
+  /* Cores de Fundo (Base Noturna - Indigo Navy, não é preto puro!) */
+  --bg-night:        #0d0d1a;   /* Fundo principal da página */
+  --bg-dark:         #14142a;   /* Fundo de seções secundárias */
+  --bg-elevated:     #1c1c38;   /* Fundo para caixas de input e cards */
+
+  /* Cores de Texto */
+  --text-primary:    #ffffff;   /* Texto principal de leitura */
+  --text-secondary:  #c4c0d8;   /* Descrições e parágrafos */
+  --text-muted:      #6e6e85;   /* Copyright e legendas secundárias */
+
+  /* Acentos Neon (Vice City Vibes) */
+  --neon-pink:       #ff3d8b;   /* Rosa/coral para botões e foco */
+  --neon-magenta:    #e0218a;   /* Magenta vibrante */
+  --neon-coral:      #ff6a6a;   /* Título de seção "Vice City" */
+  --neon-orange:     #ff7a18;   /* Gradiente laranja sunset */
+  --neon-yellow:     #ffd23f;   /* Destaques dourados */
+
+  /* Fontes (Importadas no HTML) */
+  --font-display-cond: "Oswald", sans-serif;       /* Títulos altos e compactos */
+  --font-display:      "Cinzel", serif;            /* Subtítulos com ar geométrico/Art Deco */
+  --font-ui:           "Questrial", sans-serif;    /* Textos normais e botões de apoio */
+  --font-serif-btn:    "Times New Roman", Times, serif; /* Botão principal (estilo retro-contraste) */
+
+  /* Grid & Espaçamento */
+  --container-max: 1200px;
+  --gutter: clamp(1rem, 5vw, 4rem); /* Espaçamento lateral dinâmico baseado na tela */
+}
+
+/* 2. RESET BÁSICO CSS
+   Removemos margens e paddings padrão do navegador para iniciar com folha limpa.
+*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Garante que padding e border não aumentem a largura total */
+}
+
+html {
+  scroll-behavior: smooth; /* Rolagem suave da página ao clicar em links internos */
+  font-size: 16px; /* Tamanho base para facilitar cálculo de rem */
+}
+
+body {
+  background-color: var(--bg-night);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  line-height: 1.6;
+  overflow-x: hidden; /* Evita barra de rolagem horizontal acidental */
+  -webkit-font-smoothing: antialiased; /* Suavização extra de fontes em navegadores WebKit */
+}
+
+/* 3. COMPONENTES GERAIS */
+
+/* Container centralizado para alinhar os conteúdos */
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto; /* Centraliza a caixa na tela */
+  padding: 0 var(--gutter);
+}
+
+/* Eyebrows (títulos bem pequenos que vêm antes dos títulos maiores) */
+.eyebrow {
+  font-family: var(--font-display-cond);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.2em; /* Espaçamento entre as letras marcante */
+  text-transform: uppercase; /* Caixa Alta */
+  color: var(--neon-pink);
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+/* BOTÕES (Pills / Arredondados com efeito Neon no hover) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none; /* Remove sublinhado padrão */
+  font-size: 1rem;
+  padding: 0.9rem 2.2rem;
+  border-radius: 50px; /* Deixa o botão no formato de pílula */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Transição suave de estados */
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+/* Botão Rosa Neon Principal (com Times New Roman para contraste marcante) */
+.btn--primary {
+  font-family: var(--font-serif-btn);
+  background-color: var(--neon-pink);
+  color: var(--text-primary);
+  font-weight: bold;
+}
+
+.btn--primary:hover {
+  filter: brightness(1.1); /* Aumenta a luminosidade */
+  box-shadow: 0 0 28px rgba(255, 61, 139, 0.65); /* Efeito brilhante/glow */
+  transform: translateY(-2px); /* Efeito sutil de flutuar */
+}
+
+.btn--primary:active {
+  transform: translateY(0); /* Volta ao normal ao clicar */
+}
+
+/* Botão Secundário Transparente / Vidro */
+.btn--secondary {
+  font-family: var(--font-ui);
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(5px); /* Borra o fundo (efeito vidro) */
+}
+
+.btn--secondary:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+
+/* 4. NAVBAR (Menu de Navegação Superior) */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* Garante que fique acima de tudo na tela */
+  background: transparent;
+  transition: background-color 0.4s, backdrop-filter 0.4s;
+}
+
+/* Classe adicionada via JavaScript quando rolamos a página */
+.navbar--scrolled {
+  background-color: rgba(13, 13, 26, 0.85); /* Fundo índigo com transparência */
+  backdrop-filter: blur(12px); /* Desfoque moderno */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.navbar__container {
+  display: flex;
+  justify-content: space-between; /* Distribui logo e botão para as extremidades */
+  align-items: center;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 1.25rem var(--gutter);
+}
+
+/* Monograma "VI" */
+.navbar__logo {
+  font-family: var(--font-display-cond);
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--text-primary);
+  text-shadow: 0 0 10px rgba(255, 61, 139, 0.4);
+  transition: opacity 0.3s;
+}
+
+.navbar__logo:hover {
+  opacity: 0.8;
+}
+
+/* Ícone Hambúrguer (Mobile) */
+.navbar__toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+}
+
+.navbar__toggle .bar {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: var(--text-primary);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+
+/* 5. HERO SECTION */
+.hero {
+  min-height: 100svh; /* Ocupa exatamente a tela cheia no mobile e desktop */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Navbar no topo, Poster no centro, Barra inferior na base */
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  padding-top: 80px; /* Evita que a navbar cubra o conteúdo do topo */
+}
+
+/* Vídeo promocional de fundo (controlado por GSAP) */
+.hero__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  opacity: 0; /* Invisível inicialmente, revelado no scroll */
+  pointer-events: none; /* Garante que cliques cheguem nos botões */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Camada escura de degradê sob a página (Scrim) */
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(13, 13, 26, 0.2) 0%, var(--bg-night) 90%),
+              linear-gradient(180deg, transparent 60%, var(--bg-night) 100%);
+  z-index: 2; /* Fica por cima do vídeo para manter o contraste das letras */
+}
+
+.hero__container {
+  width: 100%;
+  flex: 1; /* Faz o container crescer para ocupar o espaço do meio */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 3; /* Conteúdo por cima de tudo */
+  position: relative;
+  padding: 2rem 0;
+}
+
+/* Wrapper do poster para manter as proporções */
+.hero__poster-wrapper {
+  position: relative;
+  max-width: 480px;
+  width: 90%;
+  aspect-ratio: 16 / 13; /* Proporção do grid box-art */
+  border-radius: 12px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+  overflow: visible; /* Permite que efeitos saiam sutilmente */
+}
+
+/* Imagem da Arte (Box-Art) */
+.hero__poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ajusta a imagem perfeitamente dentro do container */
+  border-radius: 12px;
+  filter: contrast(1.05) saturate(1.1);
+  transition: transform 0.6s ease;
+}
+
+/* Efeito de zoom ao passar o mouse no poster */
+.hero__poster-wrapper:hover .hero__poster {
+  transform: scale(1.02);
+}
+
+/* Logo VI sobreposto no centro da imagem */
+.hero__logo-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centralização perfeita baseada no centro próprio */
+  width: 60%;
+  pointer-events: none; /* Garante que o mouse possa interagir com o que está embaixo */
+  animation: logo-glow 3s ease-in-out infinite alternate; /* Efeito de brilho pulsante */
+}
+
+/* SVG do logo VI */
+.logo-vi-svg {
+  width: 100%;
+  height: auto;
+}
+
+/* Barra de Destaques Inferior */
+.hero__bottom-bar {
+  width: 100%;
+  background: rgba(13, 13, 26, 0.75);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 1.5rem 0;
+  z-index: 4; /* Barra de destaques por cima do vídeo */
+}
+
+.hero__bottom-container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.hero__date-info, .hero__platforms {
+  flex: 1;
+}
+
+.hero__platforms {
+  text-align: right;
+}
+
+.hero__date {
+  font-family: var(--font-display-cond);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.platform-icons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.platform-icons svg {
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.platform-icons svg:hover {
+  opacity: 1;
+  color: var(--neon-cyan);
+}
+
+.platform-text {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+/* Dica de Scroll: Animação sutil de sobe e desce */
+.hero__scroll-hint {
+  position: absolute;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  animation: bounce 2s infinite;
+}
+
+
+/* 6. SEÇÃO INTERMEDIÁRIA (História) */
+.story-section {
+  padding: 120px 0;
+  background-color: var(--bg-night);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  z-index: 4;
+}
+
+/* Título Rosa/Coral Vice City */
+.story-title {
+  font-family: var(--font-display-cond);
+  font-size: clamp(2.5rem, 6vw, 4.5rem); /* Tamanho responsivo proporcional ao display */
+  font-weight: 700;
+  color: var(--neon-coral);
+  text-transform: uppercase;
+  line-height: 1.05;
+  margin-bottom: 2rem;
+  letter-spacing: -0.01em;
+}
+
+/* Caixa de texto com largura máxima ideal para leitura rápida */
+.story-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.story-content p {
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  color: var(--text-secondary);
+  line-height: 1.7;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+
+/* 7. FOOTER */
+.footer {
+  background-color: var(--bg-dark);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 80px 0 40px;
+  position: relative;
+  z-index: 4;
+}
+
+.footer__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 4rem;
+  margin-bottom: 4rem;
+}
+
+/* Logo no footer */
+.footer__logo {
+  font-family: var(--font-display-cond);
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+  text-shadow: 0 0 15px rgba(255, 61, 139, 0.3);
+}
+
+/* Caixa da Newsletter */
+.footer__newsletter {
+  max-width: 500px;
+  flex: 1;
+}
+
+.newsletter__text h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.newsletter__text p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Formulário com input e botão integrados */
+.newsletter__form {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.newsletter__input {
+  flex: 1;
+  background-color: var(--bg-elevated);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  padding: 0.8rem 1.5rem;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.3s;
+}
+
+/* Ao selecionar o campo de input */
+.newsletter__input:focus {
+  border-color: var(--neon-pink);
+  box-shadow: 0 0 10px rgba(255, 61, 139, 0.2);
+}
+
+.newsletter__success-msg {
+  display: none; /* Oculto por padrão, ativado pelo JS */
+  color: var(--neon-cyan);
+  font-size: 0.9rem;
+  margin-top: 0.75rem;
+  font-weight: bold;
+}
+
+.footer__divider {
+  border: 0;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.08);
+  margin-bottom: 2.5rem;
+}
+
+.footer__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* Quebra linha caso não caiba em telas muito pequenas */
+  gap: 2rem;
+}
+
+.footer__socials {
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* Links Sociais redondos estilo retrô */
+.social-link {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+}
+
+.social-link:hover {
+  background-color: var(--neon-pink);
+  color: var(--text-primary);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(255, 61, 139, 0.4);
+}
+
+.footer__copy {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  max-width: 600px;
+  line-height: 1.5;
+}
+
+
+/* 7.5. SEÇÃO BUILD SEQUENCE */
+.build-section {
+  position: relative;
+  width: 100%;
+  height: 100dvh; /* Ocupa a viewport inteira */
+  overflow: hidden;
+  background-color: var(--bg-night);
+}
+
+.build-section__video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.build-section__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2; /* Fica por cima do vídeo */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: radial-gradient(circle at center, rgba(13, 13, 26, 0.4) 0%, rgba(13, 13, 26, 0.85) 100%);
+  pointer-events: none; /* Garante que o scroll continue pelo mouse */
+  padding: 0 var(--gutter);
+}
+
+.build-section__title {
+  font-family: var(--font-display-cond);
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  text-transform: uppercase;
+  color: var(--neon-pink);
+  margin-bottom: 0.75rem;
+  text-shadow: 0 0 20px rgba(255, 61, 139, 0.5);
+}
+
+.build-section__subtitle {
+  font-family: var(--font-ui);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--text-secondary);
+  max-width: 600px;
+  line-height: 1.5;
+}
+
+
+/* 8. ANIMAÇÕES (KEYFRAMES) */
+
+/* Brilho Pulsante no Logo VI */
+@keyframes logo-glow {
+  0% {
+    filter: drop-shadow(0 0 5px rgba(255, 61, 139, 0.3)) drop-shadow(0 0 10px rgba(255, 122, 24, 0.1));
+  }
+  100% {
+    filter: drop-shadow(0 0 15px rgba(255, 61, 139, 0.7)) drop-shadow(0 0 30px rgba(255, 122, 24, 0.4));
+  }
+}
+
+/* Seta de rolagem se movimentando */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-8px);
+  }
+  60% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Efeito fade-in com subida para elementos de Scroll Reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), 
+              transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* 9. RESPONSIVIDADE (MEDIA QUERIES)
+   Ajustes de layout para que o site funcione perfeitamente em celulares.
+*/
+@media (max-width: 900px) {
+  /* No mobile, mudamos a barra inferior para formato de lista vertical */
+  .hero__bottom-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+
+  .hero__platforms {
+    text-align: center;
+  }
+
+  .platform-icons {
+    justify-content: center;
+  }
+
+  /* Footer top em coluna única */
+  .footer__top {
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+  
+  .footer__newsletter {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Formulário de newsletter em coluna única em celulares pequenos */
+  .newsletter__form {
+    flex-direction: column;
+  }
+  
+  .newsletter__input {
+    width: 100%;
+  }
+
+  .footer__bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+}

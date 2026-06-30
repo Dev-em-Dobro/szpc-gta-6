@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GTA VI - Vice City Inspired Landing Page</title>
+  
+  <!-- Fontes do Google Fonts: Oswald (títulos condensados), Cinzel (subtítulos Art Deco) e Questrial (corpo do texto) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Oswald:wght@500;700&family=Questrial&display=swap" rel="stylesheet">
+  
+  <!-- Arquivo de estilo CSS principal -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAVBAR: Menu superior fixo e transparente -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar__container">
+      <!-- Logo "VI" estilo neon -->
+      <a href="#" class="navbar__logo">VI</a>
+      
+      <!-- Botão Hambúrguer para menu mobile (para iniciantes verem a estrutura) -->
+      <button class="navbar__toggle" id="mobile-menu" aria-label="Abrir Menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION: O destaque principal com o poster clássico e o logo sobreposto -->
+  <header class="hero">
+    <!-- Vídeo que avança/retrocede com o scroll (GSAP ScrollTrigger) -->
+    <video class="hero__video" src="assets/magnific_video-curto-de-5-a-camera_aQetRV4fSh.mp4" muted playsinline preload="auto"></video>
+
+    <!-- Efeito de sombreamento (scrim) para garantir leitura do texto -->
+    <div class="hero__scrim"></div>
+    
+    <div class="hero__container">
+      <!-- Container do poster central -->
+      <div class="hero__poster-wrapper">
+        <!-- Imagem gerada do Box Art -->
+        <img src="assets/gta_box_art.png" alt="GTA VI Box Art Artwork" class="hero__poster">
+        
+        <!-- Logo "VI" grande estilizado em SVG sobreposto no centro da imagem -->
+        <div class="hero__logo-overlay">
+          <svg viewBox="0 0 200 200" class="logo-vi-svg">
+            <defs>
+              <!-- Gradiente Vice City: Rosa neon para Laranja sunset -->
+              <linearGradient id="gta-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ff3d8b" />
+                <stop offset="50%" stop-color="#e0218a" />
+                <stop offset="100%" stop-color="#ff7a18" />
+              </linearGradient>
+              <!-- Sombra para destacar o logo da imagem de fundo -->
+              <filter id="shadow">
+                <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.8"/>
+              </filter>
+            </defs>
+            <!-- Forma da letra V e I estilizada -->
+            <g filter="url(#shadow)">
+              <path d="M20 20 L65 20 L95 140 L125 20 L170 20 L115 180 L75 180 Z" fill="url(#gta-grad)" />
+              <rect x="155" y="20" width="25" height="160" fill="url(#gta-grad)" />
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Scroll Hint: seta sutil indicando que há mais conteúdo abaixo -->
+      <div class="hero__scroll-hint">
+        <span>Role para ver mais</span>
+        <svg class="arrow-down" viewBox="0 0 24 24" width="24" height="24">
+          <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Barra inferior com Informações e Chamada para Ação (CTA) -->
+    <div class="hero__bottom-bar">
+      <div class="hero__bottom-container">
+        <div class="hero__date-info">
+          <p class="hero__eyebrow">Lançamento</p>
+          <h3 class="hero__date">19 de Novembro de 2026</h3>
+        </div>
+        
+        <!-- Botão CTA Principal (estilo Pill, com Times New Roman para contraste serifado) -->
+        <a href="#preorder" class="btn btn--primary">Reserve Agora</a>
+        
+        <div class="hero__platforms">
+          <p class="hero__eyebrow">Disponível em</p>
+          <!-- Ícones das plataformas em SVG -->
+          <div class="platform-icons">
+            <!-- PlayStation Icon -->
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" title="PS5">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15H9v-2h2v2zm0-4H9V7h2v6zm4 4h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+            </svg>
+            <!-- Xbox Icon -->
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" title="Xbox Series X|S">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg>
+            <span class="platform-text">PS5 · Xbox Series X|S</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- SEÇÃO INTERMEDIÁRIA: Bloco de história (Vice City, EUA) -->
+    <section class="story-section">
+      <div class="container reveal">
+        <p class="eyebrow">História</p>
+        <h2 class="story-title">Vice City, EUA.</h2>
+        <div class="story-content">
+          <p>
+            Jason e Lucia sempre souberam que tudo estava contra eles. Mas, depois que um serviço simples dá errado, eles vão do lado mais sombrio ao lugar mais ensolarado dos Estados Unidos, em meio a uma conspiração criminosa se estendendo por toda a Leonida — e vão ter que aprender a depender um do outro mais do que nunca para sobreviver.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO BUILD SEQUENCE: Vídeo animado em reverso pelo scroll -->
+    <section class="build-section" id="build-section">
+      <!-- Vídeo que avança/retrocede com o scroll em formato invertido -->
+      <video class="build-section__video" src="assets/build_sequence.mp4" muted playsinline preload="auto"></video>
+      
+      <!-- Overlay de texto informativo sobre a montagem -->
+      <div class="build-section__overlay">
+        <div class="container">
+          <p class="eyebrow">Build Sequence</p>
+          <h2 class="build-section__title">Montagem de Leonida</h2>
+          <p class="build-section__subtitle">A evolução de Vice City ao pôr do sol frame por frame (Invertido no scroll).</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER: Rodapé clássico da Rockstar, com newsletter e links institucionais -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__top">
+        <!-- Logo GTA VI em miniatura centralizado -->
+        <div class="footer__logo">GTA VI</div>
+        
+        <!-- Newsletter: Receber Rockstar Propaganda -->
+        <div class="footer__newsletter">
+          <div class="newsletter__text">
+            <h3>Receber Rockstar Propaganda</h3>
+            <p>Fique por dentro das novidades, atualizações de jogos e ofertas exclusivas.</p>
+          </div>
+          <form class="newsletter__form" id="newsletter-form">
+            <input type="email" placeholder="Seu e-mail profissional" required class="newsletter__input">
+            <button type="submit" class="btn btn--secondary">Inscrever-se</button>
+          </form>
+          <!-- Mensagem de confirmação que aparece dinamicamente via JS -->
+          <p class="newsletter__success-msg" id="newsletter-success">Obrigado por se inscrever!</p>
+        </div>
+      </div>
+
+      <hr class="footer__divider">
+
+      <div class="footer__bottom">
+        <div class="footer__socials">
+          <a href="#" aria-label="YouTube" class="social-link">YT</a>
+          <a href="#" aria-label="Instagram" class="social-link">IG</a>
+          <a href="#" aria-label="X / Twitter" class="social-link">X</a>
+        </div>
+        <p class="footer__copy">&copy; 2026 Rockstar Games, Inc. GTA VI, Grand Theft Auto e marcas registradas são propriedade da Take-Two Interactive Software.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- CDNs do GSAP e ScrollTrigger para a animação do vídeo no scroll -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Script de comportamento JS -->
+  <script src="script.js"></script>
+</body>
+</html>
