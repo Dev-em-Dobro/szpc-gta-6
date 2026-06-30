@@ -9,6 +9,9 @@
 // Ativamos o ScrollTrigger para gerenciar as animações baseadas no scroll
 if (typeof gsap !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
+  // Ignora o resize "falso" que a barra de endereço do mobile dispara ao rolar
+  // (mostra/esconde) — era a principal fonte de refresh no meio do pin do hero.
+  ScrollTrigger.config({ ignoreMobileResize: true });
 }
 
 // Sempre inicia/recarrega a página no TOPO. O hero é "pinado" e sua animação
@@ -241,23 +244,39 @@ function initHeroTimeline(isTouch) {
       scrub: 1,
       pin: true,
       anticipatePin: 1,
-      invalidateOnRefresh: true // Recalcula os valores da animação no resize (evita estado "preso")
+      // Recalcula pin/medidas no resize. Agora é SEGURO porque os tweens abaixo
+      // são fromTo com "from" EXPLÍCITO: o invalidate() do refresh relê o início
+      // dos literais, nunca do DOM já desbotado.
+      invalidateOnRefresh: true
     }
   });
 
   heroScrollTrigger = tl.scrollTrigger;
 
-  tl.to(".hero__container, .hero__bottom-bar, .hero__scroll-hint", {
-    opacity: 0,
-    scale: 0.6,
-    duration: 0.1,
-    ease: "power2.out"
-  });
+  // FADE OUT do conteúdo do hero.
+  // fromTo com "from" EXPLÍCITO: quando um refresh dispara invalidate() (resize,
+  // barra de endereço do mobile, load de fonte/imagem/vídeo, orientação), o GSAP
+  // relê o início dos literais — NUNCA do estado atual. Com .to() simples, um
+  // refresh com o hero rolado gravava opacity:0/scale:0.6 como início (virava
+  // 0→0) e o conteúdo não voltava ao subir.
+  // A setinha (.hero__scroll-hint) vai num fromTo próprio porque o "from" dela é
+  // opacity:0.7 (valor do CSS), e não 1 — preservando o visual exato.
+  tl.fromTo(".hero__container, .hero__bottom-bar",
+    { opacity: 1, scale: 1 },
+    { opacity: 0, scale: 0.6, duration: 0.1, ease: "power2.out" }, 0
+  );
 
-  tl.to(heroVideo, {
-    opacity: 1,
-    duration: 0.8
-  }, "<");
+  tl.fromTo(".hero__scroll-hint",
+    { opacity: 0.7, scale: 1 },
+    { opacity: 0, scale: 0.6, duration: 0.1, ease: "power2.out" }, 0
+  );
+
+  // FADE IN do vídeo (mesmo motivo: "from" explícito).
+  // immediateRender:false porque está sobreposto aos tweens de cima (posição 0).
+  tl.fromTo(heroVideo,
+    { opacity: 0 },
+    { opacity: 1, duration: 0.8, immediateRender: false }, 0
+  );
 }
 
 // Conecta o scrubber de momentum quando o vídeo estiver pronto.
