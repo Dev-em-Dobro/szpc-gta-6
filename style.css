@@ -494,6 +494,23 @@ body {
   }
 }
 
+/* Notebooks e telas de altura reduzida (desktop): encaixa TODO o hero na altura
+   visível da tela, sem scroll interno e sem cortar conteúdo.
+   O poster é 16:9 (3344x1888 → largura/altura = 1.7712). Em vez de limitar a
+   ALTURA da imagem (o que deixaria a sombra/borda do wrapper mais largas que a
+   imagem), encolhemos a LARGURA proporcionalmente à altura disponível — assim
+   imagem, sombra e a barra de baixo diminuem juntas e continuam alinhadas.
+   Orçamento vertical fixo (~255px): padding-top do hero (40) + padding do
+   .hero__container (24) + barra de baixo (~111) + folga para a seta (~80).
+   Em telas altas (>~763px de altura) o teto de 900px vence e NADA muda —
+   as resoluções que já estão ok ficam intactas. */
+@media (min-width: 901px) {
+  .hero__poster-wrapper,
+  .hero__bottom-container {
+    max-width: min(900px, calc((100svh - 255px) * 1.7712));
+  }
+}
+
 @media (max-width: 700px) {
   /* Card mais alto (retrato) no mobile + foca mais à esquerda da imagem
      (background-position) para não cortar o rosto da personagem da esquerda. */
