@@ -47,23 +47,23 @@ jumpToTop();
    Gerencia os efeitos visuais de rolagem e clique no menu de navegação.
    ======================================================================== */
 function setupNavbar() {
-  const navbar = document.getElementById('navbar');
-  const mobileMenuBtn = document.getElementById('mobile-menu');
+  const navbar = document.getElementById('menu');
+  const mobileMenuBtn = document.getElementById('menu-mobile');
 
   if (navbar) {
     window.addEventListener('scroll', () => {
-      // Adiciona fundo fosco à navbar ao descer o scroll
+      // Adiciona fundo fosco ao menu ao descer o scroll
       if (window.scrollY > 50) {
-        navbar.classList.add('navbar--scrolled');
+        navbar.classList.add('menu-rolado');
       } else {
-        navbar.classList.remove('navbar--scrolled');
+        navbar.classList.remove('menu-rolado');
       }
     });
   }
 
   if (mobileMenuBtn) {
     mobileMenuBtn.addEventListener('click', () => {
-      mobileMenuBtn.classList.toggle('is-active');
+      mobileMenuBtn.classList.toggle('ativo');
       alert('Menu mobile clicado! Em breve implementaremos a barra lateral de links.');
     });
   }
@@ -74,7 +74,7 @@ function setupNavbar() {
    Controla a revelação suave (fade-in + slide) de textos ao rolar a página.
    ======================================================================== */
 function setupReveal() {
-  const revealElements = document.querySelectorAll('.reveal');
+  const revealElements = document.querySelectorAll('.aparecer');
 
   if (revealElements.length === 0) return;
 
@@ -87,7 +87,7 @@ function setupReveal() {
   const observer = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
+        entry.target.classList.add('visivel');
         observer.unobserve(entry.target);
       }
     });
@@ -218,7 +218,7 @@ function createMomentumVideoScrubber(video, options = {}) {
    Animação original que encolhe (scale) o conteúdo e revela o primeiro vídeo.
    ======================================================================== */
 
-const heroVideo = document.querySelector('.hero__video');
+const heroVideo = document.querySelector('.capa-video');
 let heroScrollTrigger = null;
 let heroVideoScrubber = null;
 
@@ -228,7 +228,7 @@ let heroVideoScrubber = null;
 // vídeo (12MB), o usuário poderia rolar a página antes do pin existir — e, ao
 // voltar pra cima, o conteúdo do hero não reaparecia (ficava preso em opacity 0).
 function initHeroTimeline(isTouch) {
-  const heroSection = document.querySelector('.hero');
+  const heroSection = document.querySelector('.capa');
   if (!heroSection || !heroVideo) return;
 
   // No mobile o vídeo só toca (não é scrubado), então não precisa segurar o
@@ -238,7 +238,7 @@ function initHeroTimeline(isTouch) {
 
   const tl = gsap.timeline({
     scrollTrigger: {
-      trigger: ".hero",
+      trigger: ".capa",
       start: "top top",
       end: pinDistance,
       scrub: 1,
@@ -259,14 +259,14 @@ function initHeroTimeline(isTouch) {
   // relê o início dos literais — NUNCA do estado atual. Com .to() simples, um
   // refresh com o hero rolado gravava opacity:0/scale:0.6 como início (virava
   // 0→0) e o conteúdo não voltava ao subir.
-  // A setinha (.hero__scroll-hint) vai num fromTo próprio porque o "from" dela é
+  // A setinha (.capa-seta) vai num fromTo próprio porque o "from" dela é
   // opacity:0.7 (valor do CSS), e não 1 — preservando o visual exato.
-  tl.fromTo(".hero__container, .hero__bottom-bar",
+  tl.fromTo(".capa-conteudo, .capa-barra",
     { opacity: 1, scale: 1 },
     { opacity: 0, scale: 0.6, duration: 0.1, ease: "power2.out" }, 0
   );
 
-  tl.fromTo(".hero__scroll-hint",
+  tl.fromTo(".capa-seta",
     { opacity: 0.7, scale: 1 },
     { opacity: 0, scale: 0.6, duration: 0.1, ease: "power2.out" }, 0
   );

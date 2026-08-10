@@ -13,56 +13,73 @@
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <nav class="navbar" id="navbar">
-    <div class="navbar__container">
-      <a href="#" class="navbar__logo">VI</a>
+  <!-- MENU DO TOPO -->
+  <!-- O id="menu" existe para o JavaScript encontrar esta barra e escurecer
+       o fundo dela quando a pessoa rola a página (veja script.js). -->
+  <nav class="menu" id="menu">
+    <div class="menu-conteudo">
+      <a href="#" class="menu-logo">VI</a>
     </div>
   </nav>
 
-  <!-- HERO -->
-  <header class="hero">
-    <video class="hero__video" src="assets/magnific_video-curto-de-5-a-camera_aQetRV4fSh.mp4" muted playsinline webkit-playsinline preload="auto"></video>
+  <!-- CAPA (a primeira tela, que ocupa o monitor inteiro) -->
+  <header class="capa">
+    <!-- Vídeo de fundo. "muted" e "playsinline" não têm valor: são atributos
+         de liga/desliga. Presentes = ligados. -->
+    <video class="capa-video" src="assets/magnific_video-curto-de-5-a-camera_aQetRV4fSh.mp4" muted playsinline preload="auto"></video>
 
-    <div class="hero__container">
-      <div class="hero__poster-wrapper">
-        <img src="assets/gta_box_art.jpeg" alt="GTA VI Box Art Artwork" class="hero__poster">
-      </div>
+    <div class="capa-conteudo">
+      <!-- Toda página precisa de um <h1>: é o título principal, o mais
+           importante de todos. Aqui o título é a própria arte do jogo, então
+           quem cumpre esse papel para o Google e para leitores de tela é o
+           texto do alt="" da imagem. -->
+      <h1 class="capa-moldura">
+        <img src="assets/gta_box_art.jpeg" alt="Grand Theft Auto VI" class="capa-imagem">
+      </h1>
     </div>
 
-    <div class="hero__bottom-bar">
-      <div class="hero__bottom-container">
-        <div class="hero__date-info">
-          <p class="hero__eyebrow">Lançamento</p>
-          <h3 class="hero__date">19 de Novembro de 2026</h3>
+    <div class="capa-barra">
+      <div class="capa-barra-conteudo">
+        <div class="capa-lancamento">
+          <!-- "rotulo" é aquele textinho pequeno e maiúsculo que fica em cima
+               do título. Designers chamam de "eyebrow" (sobrancelha). Não é
+               tag do HTML: é só um nome de classe que a gente escolheu. -->
+          <p class="capa-rotulo">Lançamento</p>
+          <p class="capa-data">19 de Novembro de 2026</p>
         </div>
 
-        <a href="#preorder" class="btn btn--primary">Reserve agora</a>
+        <!-- TODO: quando a seção de reserva existir, trocar por href="#reserva".
+             Por enquanto "#" é o link vazio, usado como provisório. -->
+        <a href="#" class="botao botao-primario">Reserve agora</a>
 
-        <div class="hero__platforms">
-          <p class="hero__eyebrow">Disponível em</p>
-          <div class="platform-icons">
-            <span class="platform-text">PS5 · Xbox Series X|S</span>
+        <div class="capa-plataformas">
+          <p class="capa-rotulo">Disponível em</p>
+          <div class="lista-plataformas">
+            <span class="texto-plataforma">PS5 · Xbox Series X|S</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Seta de scroll no rodapé do hero -->
-    <div class="hero__scroll-hint">
-      <svg class="arrow-down" viewBox="0 0 24 24" width="24" height="24">
-        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/>
-      </svg>
+    <!-- Setinha no rodapé da capa, convidando a rolar a página -->
+    <!-- É um PNG com fundo transparente, então ele se encaixa em cima do
+         vídeo sem aparecer nenhum quadrado branco atrás.
+         O alt="" vazio é de propósito: a seta é enfeite, não passa
+         informação, então leitores de tela devem pular ela. -->
+    <div class="capa-seta">
+      <img src="assets/seta-baixo.png" alt="" class="seta-baixo" width="24" height="24">
     </div>
   </header>
 
   <main>
     <!-- História -->
-    <section class="story-section">
-      <div class="container reveal">
-        <p class="eyebrow">História</p>
-        <h2 class="story-title">Vice City, EUA.</h2>
-        <div class="story-content">
+    <section class="secao-historia">
+      <!-- A classe "aparecer" deixa o bloco invisível no começo. O JavaScript
+           avisa quando ele entra na tela e aí o CSS faz aparecer subindo. -->
+      <div class="conteudo-central aparecer">
+        <p class="rotulo">História</p>
+        <h2 class="historia-titulo">Vice City, EUA.</h2>
+        <div class="historia-texto">
           <p>
             Jason e Lucia sempre souberam que tudo estava contra eles. Mas, depois que um serviço simples dá errado, eles vão do lado mais sombrio ao lugar mais ensolarado dos Estados Unidos, em meio a uma conspiração criminosa se estendendo por toda a Leonida — e vão ter que aprender a depender um do outro mais do que nunca para sobreviver.
           </p>
@@ -70,18 +87,18 @@
       </div>
     </section>
 
-    <!-- Mídia: card de imagem com overlay -->
-    <section class="media-section">
-      <div class="container reveal">
-        <article class="media-card">
-          <div class="media-card__overlay">
-            <p class="eyebrow">Vídeos</p>
-            <h3 class="media-card__title">2º Trailer</h3>
-            <p class="media-card__subtitle">A maior e mais imersiva evolução da série Grand Theft Auto até o momento.</p>
-            <a href="#" class="btn btn--primary media-card__btn">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
+    <!-- Vídeo: card com a imagem de fundo e o texto por cima -->
+    <section class="secao-video">
+      <div class="conteudo-central aparecer">
+        <article class="card-video">
+          <div class="card-video-conteudo">
+            <p class="rotulo">Vídeos</p>
+            <h2 class="card-video-titulo">2º Trailer</h2>
+            <p class="card-video-descricao">A maior e mais imersiva evolução da série Grand Theft Auto até o momento.</p>
+            <!-- O alt="" é vazio porque o ícone só repete o que o texto
+                 "Ver agora" já diz — não precisa ser lido duas vezes. -->
+            <a href="#" class="botao botao-primario card-video-botao">
+              <img src="assets/icone-play.png" alt="" class="icone-play" width="18" height="18">
               Ver agora
             </a>
           </div>
@@ -90,12 +107,12 @@
     </section>
   </main>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container footer__inner">
-      <div class="footer__logo">GTA VI</div>
+  <!-- RODAPÉ -->
+  <footer class="rodape">
+    <div class="conteudo-central rodape-conteudo">
+      <div class="rodape-logo">GTA VI</div>
 
-      <nav class="footer__nav">
+      <nav class="rodape-links">
         <a href="#">Corporativo</a>
         <a href="#">Privacidade</a>
         <a href="#">Configurações de cookie</a>
@@ -104,17 +121,17 @@
         <a href="#">Não vender nem compartilhar as minhas informações pessoais</a>
       </nav>
 
-      <div class="footer__socials">
-        <a href="#" aria-label="YouTube" class="social-link">YT</a>
-        <a href="#" aria-label="Instagram" class="social-link">IG</a>
-        <a href="#" aria-label="X / Twitter" class="social-link">X</a>
+      <div class="rodape-redes">
+        <a href="#" aria-label="YouTube" class="rede-social">YT</a>
+        <a href="#" aria-label="Instagram" class="rede-social">IG</a>
+        <a href="#" aria-label="X / Twitter" class="rede-social">X</a>
       </div>
 
-      <p class="footer__rating">
+      <p class="rodape-classificacao">
         Pode incluir conteúdo inapropriado para crianças. Acesse
         <a href="https://www.gov.br" target="_blank" rel="noopener">gov.br</a> para ver informações da classificação indicativa.
       </p>
-      <p class="footer__copy">&copy; 2026 Rockstar Games, Inc. GTA VI, Grand Theft Auto e marcas registradas são propriedade da Take-Two Interactive Software.</p>
+      <p class="rodape-direitos">&copy; 2026 Rockstar Games, Inc. GTA VI, Grand Theft Auto e marcas registradas são propriedade da Take-Two Interactive Software.</p>
     </div>
   </footer>
 
