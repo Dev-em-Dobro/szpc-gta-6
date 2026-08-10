@@ -1,0 +1,7 @@
+# Estado de ferramentas locais (não faz parte do projeto)
+.gstack/
+
+# Arquivos que o sistema operacional cria sozinho
+.DS_Store
+Thumbs.db
+desktop.ini
