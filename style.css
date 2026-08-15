@@ -102,6 +102,14 @@ body {
   width: 100%;
   z-index: 1000;
   background: transparent;
+  transition: transform 0.3s ease;
+}
+
+/* O JavaScript adiciona esta classe depois dos primeiros 50px de rolagem.
+   O menu só faz sentido em cima da capa (transparente sobre o vídeo), então
+   ao rolar ele sai da tela e volta quando a pessoa retorna ao topo. */
+.menu-rolado {
+  transform: translateY(-100%);
 }
 
 .menu-conteudo {
